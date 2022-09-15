@@ -1,3 +1,4 @@
+# DEFINIR LA CLASSE CIRCUIT
 # pour l’instant, un circuit est défini uniquement comme un ensemble de noeuds (nous nous occuperons des composants plus tard)
 # ◦ Nous décidons de conserver l’ensemble des noeuds d’un circuit dans un attribut noeuds de type list. Définir l’attribut correspondant (avec @property et __init__)
 # ◦ On ne changera pas d’un coup toute la liste des noeuds. On ne défini donc pas de « setter ». Comme une liste est modifiable en python, on pourra par contre ajouter et supprimer des noeuds à la liste.
