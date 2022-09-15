@@ -46,10 +46,7 @@ class Noeud:
     # TODO : définir méthode DEMANDE qui permet à l’utilisateur de créer un nœud en précisant son nom, son abscisse et son ordonnée
     def demande() -> 'Noeud':
         print("**CREATION D'UN NOUVEAU NOEUD**\n")
-        print("Entrer le nom du Noeud :")
-        nom = input()
-        print("Entrer la coordonnée en abscisse (x) du Noeud :")
-        nx = input()
-        print("Entrer la coordonnée en ordonnée (y) du Noeud :")
-        ny = input()
+        nom = input("Entrer le nom du Noeud :")
+        nx = input("Entrer la coordonnée en abscisse (x) du Noeud :")
+        ny = input("Entrer la coordonnée en ordonnée (y) du Noeud :")
         return Noeud(nom,nx,ny)
