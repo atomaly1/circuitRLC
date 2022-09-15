@@ -17,3 +17,5 @@
 #   ▪ raise Exception("le noeud n’est pas dans le circuit")
 # ◦ menu : permet la gestion du circuit par menu textuel : voir ci-dessous un exemple d’interaction :
 #   ▪ pour la suppression d’un nœud, vous aurez sans doute besoin de la méthode utilitaire choisiNoeud qui permet à l’utilisateur de choisir un nœud existant dans le circuit
+
+# TODO oui
