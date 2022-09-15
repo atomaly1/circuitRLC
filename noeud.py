@@ -4,7 +4,7 @@ class Noeud:
     def __init__(self, nom: str, nx: float, ny: float):
         self._nom = nom
         self._nx = nx
-        self._ny = nx
+        self._ny = ny
 
     @property
     def nom(self) -> str:
@@ -23,13 +23,12 @@ class Noeud:
     def nx(self, nx: float) -> None:
         self._nx = nx
 
-    # TODO : définir ny
     @property
     def ny(self) -> float:
         print("lecture ny")
         return self._ny
 
-    @nx.setter
+    @ny.setter
     def nx(self, ny: float) -> None:
         self._ny = ny
 
