@@ -24,16 +24,16 @@ if __name__ == '__main__':
             case '1': # afficher le circuit
                 print("Circuit{\n")
                 print("---------- noeuds :\n")
-                # TODO fonction affichage liste de tous les noeuds avec __str__
+                # TODO ajouter fonction affichage des noeuds dans 'circuit.py'
                 print("}") 
                 pass
 
             case '2': # ajouter un noeud
-                # TODO faire une liste sous forme de tableau avec 'noeud.demande()'
+                Noeud.demande() # TODO à ajouter à une liste dans 'circuit.py'
                 pass
 
             case '3': # supprimer un noeud
-                # TODO supprimer un noeud à partir d'un menu de séléction *TO CREATE*
+                # TODO supprimer un noeud à partir d'un menu de séléction des noeuds
                 pass
                 
             case '4': # trouver noeud le plus proche
