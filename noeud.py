@@ -36,7 +36,7 @@ class Noeud:
 
     # TODO : définir méthode __str__
     def __str__(self):
-        return f"Noeud {self.nom} en {self.nx},{self.ny}"
+        return f"Noeud {self.nom} en {self.nx}, {self.ny}"
 
     # TODO : définir méthode DISTANCE qui calcule la distance entre un noeud est un point de coordonnées px,py
     def distance(self, px: float, py: float) -> float:
@@ -48,7 +48,7 @@ class Noeud:
     @classmethod
     def demande(cls) -> 'Noeud':
         print("**CREATION D'UN NOUVEAU NOEUD**\n")
-        nom = input("Entrer le nom du Noeud : ")
-        nx = input("Entrer la coordonnée en abscisse (x) du Noeud : ")
-        ny = input("Entrer la coordonnée en ordonnée (y) du Noeud : ")
+        nom = input("Entrer le nom du Noeud :\n")
+        nx = input("Entrer la coordonnée en abscisse (x) du Noeud :\n")
+        ny = input("Entrer la coordonnée en ordonnée (y) du Noeud :\n")
         return Noeud(nom,nx,ny)

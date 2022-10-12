@@ -1,13 +1,15 @@
 # TODO : import all classes necessary with (example): 
 
 import sys
+from circuit import Circuit
 from noeud import Noeud
 
 # TODO faire la strucuture du programme (voir sujet du TP pour les outputs)
 
 if __name__ == '__main__':
     
-    menu = 1
+    menu = 1 # TODO Amelioration : liste/enumeration pour le menuing
+    circuit = Circuit([])
     while menu != 0:
 
         print("1 : afficher le circuit")
@@ -25,11 +27,15 @@ if __name__ == '__main__':
                 print("Circuit{\n")
                 print("---------- noeuds :\n")
                 # TODO ajouter fonction affichage des noeuds dans 'circuit.py'
+                print(circuit)
                 print("}") 
                 pass
 
             case '2': # ajouter un noeud
-                Noeud.demande() # TODO à ajouter à une liste dans 'circuit.py'
+                noeud1 = Noeud.demande() # TODO à ajouter à une liste dans 'circuit.py'
+                print(noeud1)
+                # TODO ajouter le noeud au circuit
+                circuit.addNoeud(noeud1)
                 pass
 
             case '3': # supprimer un noeud
