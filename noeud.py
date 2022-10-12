@@ -6,9 +6,11 @@ class Noeud:
         self._nx = nx
         self._ny = ny
 
-    @property
+    # _var est la synthaxe pour la valeur "privé" de l'attribut (pas de lecture et pas d'ecriture)
+    # conséquence du @property: accès uniquement en lecture (= getter en Java)
+    @property 
     def nom(self) -> str:
-        return self._nom
+        return self._nom 
 
     @nom.setter
     def nom(self, nom: str) -> None:
@@ -16,7 +18,7 @@ class Noeud:
     
     @property
     def nx(self) -> float:
-        print("lecture nx")
+        #print("lecture nx")
         return self._nx
 
     @nx.setter
@@ -25,11 +27,11 @@ class Noeud:
 
     @property
     def ny(self) -> float:
-        print("lecture ny")
+        #print("lecture ny")
         return self._ny
 
     @ny.setter
-    def nx(self, ny: float) -> None:
+    def ny(self, ny: float) -> None:
         self._ny = ny
 
     # TODO : définir méthode __str__
@@ -46,7 +48,7 @@ class Noeud:
     @classmethod
     def demande(cls) -> 'Noeud':
         print("**CREATION D'UN NOUVEAU NOEUD**\n")
-        nom = input("Entrer le nom du Noeud :")
-        nx = input("Entrer la coordonnée en abscisse (x) du Noeud :")
-        ny = input("Entrer la coordonnée en ordonnée (y) du Noeud :")
+        nom = input("Entrer le nom du Noeud : ")
+        nx = input("Entrer la coordonnée en abscisse (x) du Noeud : ")
+        ny = input("Entrer la coordonnée en ordonnée (y) du Noeud : ")
         return Noeud(nom,nx,ny)
