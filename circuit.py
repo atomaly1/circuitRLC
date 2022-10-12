@@ -28,6 +28,16 @@ class Circuit:
         return maxX
 
 # TODO definir méthode minX
+# TODO Création En cours
+    def minX(self) -> float :
+        minX = 0.0
+        if len(self.noeuds) == 0:
+            pass
+        else:
+            for noeud in self.noeuds:
+                if self.noeuds.nx > minX:
+                    minX = self.noeuds.nx
+        return minX
 
 # TODO définir méthode maxY
 

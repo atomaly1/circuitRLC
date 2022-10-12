@@ -27,8 +27,8 @@ if __name__ == '__main__':
                 print("Circuit{")
                 print("---------- noeuds :")
                 # TODO ajouter fonction affichage des noeuds dans 'circuit.py'
-                print(circuit)
-                print("}") 
+                print(circuit, end = "}\n")
+                
                 pass
 
             case '2': # ajouter un noeud
