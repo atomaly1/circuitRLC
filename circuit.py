@@ -46,31 +46,27 @@ class Circuit:
 # TODO définir méthode  noeud_le_plus_proche : renvoie le noeud le plus proche du point de coordonnées px,py. Signale une erreur si le circuit ne contient pas de noeud par :
 #   ▪ raise Exception("Circuit vide")
 
-# TODO définir méthode contienNoeud : retourne vrai si un noeud est contenu dans le circuit, faux sinon
-# TODO à tester -> marche pas
+    # Retourne vrai si un noeud est contenu dans le circuit, faux sinon
     def contienNoeud(self, noeud : Noeud) -> bool:
-        for elmts in self.noeuds :
-            if elmts == noeud : return True
-        return False
+        if noeud in self.noeuds :
+            return True
+        else: return False
 
 
-# TODO définir méthode addNoeud : ajoute un nœud au circuit. Si le nœud appartient déjà au circuit :
-#   ▪ raise Exception("le noeud est déjà dans le circuit")
-# TODO à tester
+    # Ajoute un nœud au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
     def addNoeud(self, noeud : Noeud) -> None:
         if self.contienNoeud(noeud) :
             raise Exception("le noeud est déjà dans le circuit")
         else : self.noeuds.append(noeud)
         
 
-# TODO définir méthode removeNoeud : retire un nœud du circuit. Si le nœud n’appartient pas au circuit :
-#   ▪ raise Exception("le noeud n’est pas dans le circuit")
-# TODO à tester
+    # Retire un nœud du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
     def removeNoeud(self, noeud : Noeud) -> None:
         if not self.contienNoeud(noeud) :
             raise Exception("le noeud n’est pas dans le circuit")
         else : self.noeuds.remove(noeud)
 
+# méthode utilitaire pour la gestion du menu
 # TODO gérer exception si Noeud non trouvé
 # TODO à tester
     def choisiNoeud(self) -> Noeud:
@@ -80,7 +76,7 @@ class Circuit:
         for noeud in self.noeuds :
             if noeud.nom == nomNoeudChoisi : return noeud
         
-'''
+''' En cours...
 # TODO définir méthode menu : permet la gestion du circuit par menu textuel : voir ci-dessous un exemple d’interaction :
 #   ▪ pour la suppression d’un nœud, vous aurez sans doute besoin de la méthode utilitaire choisiNoeud qui permet à l’utilisateur de choisir un nœud existant dans le circuit
     def menu(self) -> bool:
@@ -126,15 +122,10 @@ class Circuit:
                 print("\nVeuillez entrer une réponse valide.\n")
                 return True
 '''
+# à utiliser pour tester les fonctions
 if __name__ == "__main__":
     noeud1 = Noeud("n1",1.0,2.0)
     noeud2 = Noeud("n2",3.0,4.0)
-    circuit = Circuit(noeud1)
-
-    print("Test fonction contienNoeud:")
-    if circuit.contienNoeud(noeud1) :
-        print("True")
-    else : print("False")
-    if circuit.contienNoeud(noeud2) :
-        print("True")
-    else : print("False")
+    circuit = Circuit([])
+    circuit.addNoeud(noeud1)
+    circuit.addNoeud(noeud2)
