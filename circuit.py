@@ -1,9 +1,7 @@
-# CLASSE CIRCUIT
 from noeud import Noeud
 
-# TODO définir la classe CIRCUIT => ensemble de Noeuds = attribut noeuds de type list
+# définir la classe CIRCUIT => ensemble de Noeuds = attribut noeuds de type list
 class Circuit:
-# TODO définir l'attribut noeuds avec @property et __init__ (voir noeud.py pour un exemple)
     def __init__(self, noeuds: list):
         self._noeuds = noeuds
 
@@ -11,15 +9,14 @@ class Circuit:
     def noeuds(self) -> list:
         return self._noeuds
 
-# TODO définir la méthode __str__
     def __str__(self):
-        #return f"[{self.noeuds[0]}]"
         _str = ""
         for elmts in self.noeuds :
-            _str += self.noeuds[elmts]
+            _str += f"[{elmts}]\n"
         return _str 
 
 # TODO définir méthode maxX :renvoie l’abscisse maximale du circuit (abscisse du noeud du circuit ayant la plus grande abscisse). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
+# TODO A tester :
     def maxX(self) -> float :
         maxX = 0.0
         if len(self._noeuds) == 0:

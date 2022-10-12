@@ -24,8 +24,8 @@ if __name__ == '__main__':
         match menu:
 
             case '1': # afficher le circuit
-                print("Circuit{\n")
-                print("---------- noeuds :\n")
+                print("Circuit{")
+                print("---------- noeuds :")
                 # TODO ajouter fonction affichage des noeuds dans 'circuit.py'
                 print(circuit)
                 print("}") 
