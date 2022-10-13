@@ -16,67 +16,67 @@ class Circuit:
         return _str 
 
 # TODO définir méthode maxX :renvoie l’abscisse maximale du circuit (abscisse du noeud du circuit ayant la plus grande abscisse). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
-# TODO A tester :
-    def maxX(self) -> float :
-        maxX = 0.0
-        if len(self._noeuds) == 0:
-            pass
-        else:
-            for noeud in self._noeuds:
-                if self._noeuds._nx > maxX:
-                    maxX = self._noeuds._nx
-        return maxX
 
 # TODO definir méthode minX
 # TODO Création En cours
-    def minX(self) -> float :
-        minX = 0.0
+    def min_x(self) -> float :
+        min_x = 0.0
         if len(self.noeuds) == 0:
             pass
         else:
             for noeud in self.noeuds:
-                if self.noeuds.nx > minX:
-                    minX = self.noeuds.nx
-        return minX
+                if self.noeuds.nx > min_x:
+                    min_x = self.noeuds.nx
+        return min_x
 
 # TODO définir méthode maxY
 
+
 # TODO définir méthode minY
 
+    '''
 # TODO définir méthode  noeud_le_plus_proche : renvoie le noeud le plus proche du point de coordonnées px,py. Signale une erreur si le circuit ne contient pas de noeud par :
 #   ▪ raise Exception("Circuit vide")
-
+    def noeud_le_plus_proche(self, px : float, py : float) -> Noeud :
+        if len(self.noeuds) != 0 :
+            min_distance = self.noeuds[0].distance(px,py)
+            for noeud in self.noeuds :
+                if noeud.distance(px,py) :
+                    
+                
+        else : raise Exception("Circuit vide")
+    '''
     # Retourne vrai si un noeud est contenu dans le circuit, faux sinon
-    def contienNoeud(self, noeud : Noeud) -> bool:
+    def contien_noeud(self, noeud : Noeud) -> bool:
         if noeud in self.noeuds :
             return True
         else: return False
 
 
     # Ajoute un nœud au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
-    def addNoeud(self, noeud : Noeud) -> None:
-        if self.contienNoeud(noeud) :
+    def add_noeud(self, noeud : Noeud) -> None:
+        if self.contien_noeud(noeud) :
             raise Exception("le noeud est déjà dans le circuit")
         else : self.noeuds.append(noeud)
         
 
     # Retire un nœud du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
-    def removeNoeud(self, noeud : Noeud) -> None:
-        if not self.contienNoeud(noeud) :
+    def remove_noeud(self, noeud : Noeud) -> None:
+        if not self.contien_noeud(noeud) :
             raise Exception("le noeud n’est pas dans le circuit")
         else : self.noeuds.remove(noeud)
 
 # méthode utilitaire pour la gestion du menu
 # TODO gérer exception si Noeud non trouvé
 # TODO à tester
-    def choisiNoeud(self) -> Noeud:
+    def choisi_noeud(self) -> Noeud:
         print(self)
         print("Taper le nom du Noeud à sélectionner :")
-        nomNoeudChoisi = input()
+        nom_noeud_choisi = input()
         for noeud in self.noeuds :
-            if noeud.nom == nomNoeudChoisi : return noeud
+            if noeud.nom == nom_noeud_choisi : return noeud
         
-''' En cours...
+'''En cours...
 # TODO définir méthode menu : permet la gestion du circuit par menu textuel : voir ci-dessous un exemple d’interaction :
 #   ▪ pour la suppression d’un nœud, vous aurez sans doute besoin de la méthode utilitaire choisiNoeud qui permet à l’utilisateur de choisir un nœud existant dans le circuit
     def menu(self) -> bool:
@@ -120,12 +120,12 @@ class Circuit:
 
             case _:
                 print("\nVeuillez entrer une réponse valide.\n")
-                return True
-'''
+                return True'''
+
 # à utiliser pour tester les fonctions
 if __name__ == "__main__":
     noeud1 = Noeud("n1",1.0,2.0)
     noeud2 = Noeud("n2",3.0,4.0)
     circuit = Circuit([])
-    circuit.addNoeud(noeud1)
-    circuit.addNoeud(noeud2)
+    circuit.add_noeud(noeud1)
+    circuit.add_noeud(noeud2)
