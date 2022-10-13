@@ -1,4 +1,4 @@
-from cmath import sqrt
+from math import sqrt
 
 class Noeud:
     def __init__(self, nom: str, nx: float, ny: float):
@@ -51,3 +51,12 @@ class Noeud:
         nx = input("Entrer la coordonnée en abscisse (x) du Noeud :\n")
         ny = input("Entrer la coordonnée en ordonnée (y) du Noeud :\n")
         return Noeud(nom,nx,ny)
+
+# à utiliser pour tester les fonctions
+if __name__ == "__main__":
+    noeud1 = Noeud("n1",1.0,2.0)
+    noeud2 = Noeud("n2",3.0,4.0)
+
+    dist = noeud1.distance(2.0,3.0)
+    print(noeud1)
+    print(dist)
