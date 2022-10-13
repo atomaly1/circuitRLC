@@ -3,7 +3,7 @@
 import sys
 from circuit import Circuit
 from noeud import Noeud
-
+#test E;\meric
 # TODO faire la strucuture du programme (voir sujet du TP pour les outputs)
 
 if __name__ == '__main__':
