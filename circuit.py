@@ -11,21 +11,29 @@ class Circuit:
 
     # Construction de la chaine de caractère pour afficher le circuit
     def __str__(self): 
-        _str = ""
-        for elmts in self.noeuds :
-            _str += f"[{elmts}]\n"
-        return _str 
+        str = ""
+        for noeud in self.noeuds :
+            str += f"[{noeud}]\n"
+        return str 
 
-# TODO définir méthode max_x :renvoie l’abscisse maximale du circuit (abscisse du noeud du circuit ayant la plus grande abscisse). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
+    # Renvoie l’abscisse maximale du circuit (abscisse du noeud du circuit ayant la plus grande abscisse). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
+    def max_x(self) -> float :
+        max_x = 0.0
+        if len(self.noeuds) != 0:
+            max_x = self.noeuds[0].nx
+            for noeud in self.noeuds:
+                if noeud.nx > max_x:
+                    max_x = noeud.nx   
+        return max_x
 
-# TODO definir méthode min_x : Analogue à max_x
-# TODO Création En cours
+    # Renvoie l’abscisse minimale du circuit. Retourne 0.0 si le circuit est vide
     def min_x(self) -> float :
         min_x = 0.0
         if len(self.noeuds) != 0:
+            min_x = self.noeuds[0].nx
             for noeud in self.noeuds:
-                if self.noeuds.nx > min_x:
-                    min_x = self.noeuds.nx   
+                if noeud.nx < min_x:
+                    min_x = noeud.nx   
         return min_x
 
 # TODO définir méthode max_y : Analogue à max_x
@@ -123,7 +131,8 @@ if __name__ == "__main__":
     noeud1 = Noeud("n1",1.0,2.0)
     noeud2 = Noeud("n2",3.0,4.0)
     circuit = Circuit([])
+    print("L'abscisse maximale est", circuit.max_x())
     
     circuit.add_noeud(noeud1)
     circuit.add_noeud(noeud2)
-    print(circuit.noeud_le_plus_proche(3.0,3.0))
+    print("L'abscisse maximale est", circuit.max_x())
