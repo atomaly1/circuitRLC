@@ -1,4 +1,4 @@
-from cmath import sqrt
+from math import sqrt
 
 class Noeud:
     def __init__(self, nom: str, nx: float, ny: float):
@@ -34,17 +34,16 @@ class Noeud:
     def ny(self, ny: float) -> None:
         self._ny = ny
 
-    # TODO : définir méthode __str__
     def __str__(self):
         return f"Noeud {self.nom} : {self.nx}, {self.ny}"
 
-    # TODO : définir méthode DISTANCE qui calcule la distance entre un noeud est un point de coordonnées px,py
+    # Calcule la distance entre un noeud est un point de coordonnées px,py
     def distance(self, px: float, py: float) -> float:
         dx = self.nx - px
         dy = self.ny - py
         return sqrt(pow(dx,2) + pow(dy,2))
 
-    # TODO : définir méthode DEMANDE qui permet à l’utilisateur de créer un nœud en précisant son nom, son abscisse et son ordonnée
+    # Permet à l’utilisateur de créer un nœud en précisant son nom, son abscisse et son ordonnée
     @classmethod
     def demande(cls) -> 'Noeud':
         print("**CREATION D'UN NOUVEAU NOEUD**\n")
@@ -52,3 +51,12 @@ class Noeud:
         nx = input("Entrer la coordonnée en abscisse (x) du Noeud :\n")
         ny = input("Entrer la coordonnée en ordonnée (y) du Noeud :\n")
         return Noeud(nom,nx,ny)
+
+# à utiliser pour tester les fonctions
+if __name__ == "__main__":
+    noeud1 = Noeud("n1",1.0,2.0)
+    noeud2 = Noeud("n2",3.0,4.0)
+
+    dist = noeud1.distance(2.0,3.0)
+    print(noeud1)
+    print(dist)
