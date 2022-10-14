@@ -48,8 +48,8 @@ class Noeud:
     def demande(cls) -> 'Noeud':
         print("**CREATION D'UN NOUVEAU NOEUD**\n")
         nom = input("Entrer le nom du Noeud :\n")
-        nx = input("Entrer la coordonnée en abscisse (x) du Noeud :\n")
-        ny = input("Entrer la coordonnée en ordonnée (y) du Noeud :\n")
+        nx = float(input("Entrer la coordonnée en abscisse (x) du Noeud :\n"))
+        ny = float(input("Entrer la coordonnée en ordonnée (y) du Noeud :\n"))
         return Noeud(nom,nx,ny)
 
 # à utiliser pour tester les fonctions
