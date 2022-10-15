@@ -1,6 +1,6 @@
 from math import sqrt
 
-class Noeud(None):
+class Noeud():
     def __init__(self, nom: str, nx: float, ny: float):
         self._nom = nom
         self._nx = nx
