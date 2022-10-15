@@ -52,6 +52,8 @@ class Noeud:
         ny = float(input("Entrer la coordonnée en ordonnée (y) du Noeud :\n"))
         return Noeud(nom,nx,ny)
 
+# TODO Forcer l'utilisateur à entrer des coordonnées chiffrées (ex : 0123456789)
+
 # à utiliser pour tester les fonctions
 if __name__ == "__main__":
     noeud1 = Noeud("n1",1.0,2.0)
