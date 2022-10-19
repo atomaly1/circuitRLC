@@ -1,4 +1,3 @@
-from math import sqrt
 from composant import Composant
 from noeud import Noeud
 from numbers import Complex
