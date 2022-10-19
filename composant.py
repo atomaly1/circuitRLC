@@ -30,7 +30,7 @@ class Composant(ABC):
 
     @nom.setter
     @abstractmethod
-    def nom(self, nom: str) -> None:
+    def nom_setter(self, nom: str) -> None:
         self._nom = nom
 
     @abstractproperty
@@ -39,7 +39,7 @@ class Composant(ABC):
 
     @nom.setter
     @abstractmethod
-    def valeur(self, valeur: float) -> None:
+    def valeur_setter(self, valeur: float) -> None:
         self._valeur = valeur
 
     @abstractmethod
