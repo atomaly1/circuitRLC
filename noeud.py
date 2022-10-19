@@ -1,6 +1,6 @@
 from math import sqrt
 
-class Noeud:
+class Noeud():
     def __init__(self, nom: str, nx: float, ny: float):
         self._nom = nom
         self._nx = nx
@@ -51,6 +51,8 @@ class Noeud:
         nx = float(input("Entrer la coordonnée en abscisse (x) du Noeud :\n"))
         ny = float(input("Entrer la coordonnée en ordonnée (y) du Noeud :\n"))
         return Noeud(nom,nx,ny)
+
+# TODO Forcer l'utilisateur à entrer des coordonnées chiffrées (ex : 0123456789)
 
 # à utiliser pour tester les fonctions
 if __name__ == "__main__":
