@@ -11,7 +11,9 @@ Si erreur :
 
 Dans le terminal VSCODE : utiliser py ou python
 >py -m venv venv
+
 >venv\Scripts\activate.bat
+
 >pip install PySide6
 
 Check interpreter -> run python file
