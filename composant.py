@@ -1,55 +1,48 @@
-#  Définir la classe abstraite Composant : 
-#  tout composant possède un nœud de départ, 
-#  et un nœud d’arrivée (on définie un nœud 
-#  de départ et un nœud d’arrivée (relation 
-#  orientée), plutôt que deux nœuds incidents 
-#  pour pouvoir donner un sens à la valeur 
-#  positive ou négative des courants/tensions).
+#  Classe abstraite Composant :
+#  - 1 nœud de départ,
+#  - 1 nœud d’arrivée ;
+#  pour pouvoir donner un sens à la valeur
+#  positive ou négative des courants/tensions.
 
-from abc import ABC, abstractmethod, abstractproperty
-from numbers import Complex
+from abc import ABC, abstractmethod
 from noeud import Noeud
+from numbers import Complex
 
 class Composant(ABC):
 
-    def __init__(self, noeud_depart: Noeud, noeud_arrivee: Noeud, nom: str, valeur: float) -> None:
+    def __init__(self, noeud_depart: Noeud, noeud_arrivee: Noeud) -> None:
         self._noeud_depart = noeud_depart
         self._noeud_arrivee = noeud_arrivee
-        self._nom = nom
-        self._valeur = valeur
 
-    # Pour être général, on va considérer que tout composant doit pouvoir calculer trois constantes
-    # (complexes) CU , CI ,CC , qui définisse l’équation linéaire générale :
-    # CU . U + CI .I = CC
-    # Compléter la définition de la classe Composant avec la déclaration des méthodes abstraites coeffU
-    # coeffI et coeffC. Spécialisez ces méthodes dans toutes les sous-classes.
+    @property
+    def noeud_depart(self) -> Noeud:
+        return self._noeud_depart
 
-    @abstractproperty
-    def nom(self) -> str:
-        return self._nom
+    @noeud_depart.setter
+    def noeud_depart(self, noeud_depart: Noeud) -> None:
+        self._noeud_depart = noeud_depart
 
-    @nom.setter
-    @abstractmethod
-    def nom_setter(self, nom: str) -> None:
-        self._nom = nom
+    @property
+    def noeud_arrivee(self) -> Noeud:
+        return self._noeud_arrivee
 
-    @abstractproperty
-    def valeur(self) -> float:
-        return self._nom
+    @noeud_arrivee.setter
+    def noeud_arrivee(self, noeud_arrivee: Noeud) -> None:
+        self._noeud_arrivee = noeud_arrivee
 
-    @nom.setter
-    @abstractmethod
-    def valeur_setter(self, valeur: float) -> None:
-        self._valeur = valeur
+# TODO
+    # def bordel(Cu, Ci, Cc) -> question pour le prof
+    #   Cu.U + Ci.I = Cc 
+    #   return C Koa se bordel ?
 
     @abstractmethod
-    def coeffU(self) -> Complex:
+    def coeff_u(self) -> Complex:
         pass
 
     @abstractmethod
-    def coeffI(self) -> Complex:
+    def coeff_i(self) -> Complex:
         pass
 
     @abstractmethod
-    def coeffC(self) -> Complex:
+    def coeff_c(self) -> Complex:
         pass
