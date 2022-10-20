@@ -30,11 +30,6 @@ class Composant(ABC):
     def noeud_arrivee(self, noeud_arrivee: Noeud) -> None:
         self._noeud_arrivee = noeud_arrivee
 
-# TODO
-    # def bordel(Cu, Ci, Cc) -> question pour le prof
-    #   Cu.U + Ci.I = Cc 
-    #   return C Koa se bordel ?
-
     @abstractmethod
     def coeff_u(self) -> Complex:
         pass
