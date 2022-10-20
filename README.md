@@ -5,7 +5,9 @@ Student project to learn Python basics and QT graphic
 ## Installing PySide6 (QT)
 
 Tester la commande py et/ou python dans le terminal de VSCODE 
+
 Si erreur :
+
     Environment Variables -> User Variables -> Path -> Edit -> Add C:\Users\[username]\AppData\Local\Programs\Python\Python37\Scripts (vérifier si le chemin correspond)
 
 
