@@ -42,10 +42,25 @@ class Circuit:
                     min_x = noeud.nx   
         return min_x
 
-# TODO définir méthode max_y : Analogue à max_x
+    # Renvoie l’abscisse minimale du circuit. Retourne 0.0 si le circuit est vide
+    def min_x(self) -> float :
+        min_x = 0.0
+        if len(self.noeuds) != 0:
+            min_x = self.noeuds[0].nx
+            for noeud in self.noeuds:
+                if noeud.nx < min_x:
+                    min_x = noeud.nx   
+        return min_x
 
-
-# TODO définir méthode min_y : Analogue à max_x
+    # Renvoie l’ordonnée maximale du circuit. Retourne 0.0 si le circuit est vide
+    def max_y(self) -> float :
+        max_y = 0.0
+        if self._circuit_non_vide :
+            max_y = self.noeuds[0].ny
+            for noeud in self.noeuds:
+                if noeud.ny > max_y:
+                    max_y = noeud.ny   
+        return max_y
 
     # Retourne vrai si un noeud est contenu dans le circuit, faux sinon
     # Soit le nom est déjà pris, soit les coordonnées sont déjà prises
