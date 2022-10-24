@@ -35,7 +35,7 @@ class Noeud():
         self._ny = ny
 
     def __str__(self):
-        return f"Noeud {self.nom} : {self.nx}, {self.ny}"
+        return f"[Noeud {self.nom} : {self.nx}, {self.ny}]"
 
     # Calcule la distance entre un noeud est un point de coordonnées px,py
     def distance(self, px: float, py: float) -> float:

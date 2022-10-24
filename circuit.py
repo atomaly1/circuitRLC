@@ -14,7 +14,7 @@ class Circuit:
     def __str__(self): 
         str = ""
         for noeud in self.noeuds :
-            str += f"[{noeud}]\n"
+            str += f"{noeud}\n"
         return str 
 
     # Retourne VRAI si le circuit n'est PAS vide, sinon retourne FAUX
@@ -132,6 +132,11 @@ class Circuit:
 if __name__ == "__main__":
 
     circuit = Circuit([])
+    n1 = Noeud("n1", 0, 100)
+    n2 = Noeud("n2", 100, 0)
+    circuit.add_noeud(n1)
+    circuit.add_noeud(n2)
+
     while(True) : circuit.menu()
     
  
