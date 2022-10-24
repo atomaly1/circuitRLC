@@ -43,11 +43,11 @@ class Resistance(Composant):
         pass 
 
 if __name__ == "__main__":
-    n1 = Noeud("n1", 0, 100)
-    print(n1)
-    n2 = Noeud("n2", 100, 100)
+    n2 = Noeud("n2", 0, 100)
     print(n2)
-    r1 = Resistance(n1, n2, "R1", 200)
+    n3 = Noeud("n3", 100, 100)
+    print(n3)
+    r1 = Resistance(n2, n3, "R1", 200)
     print(r1)
     
     #TEST NON FONCTIONNEL
