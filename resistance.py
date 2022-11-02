@@ -1,6 +1,5 @@
 from composant import Composant
 from noeud import Noeud
-from numbers import Complex
 
 class Resistance(Composant):
     
@@ -26,10 +25,8 @@ class Resistance(Composant):
         self._r = r
 
     def __str__(self) -> str:
-        return f"[Resistance {self.nom} ({self.noeud_depart} -> {self.noeud_arrivee}) : {self.r} Ohm]"
+        return f"[Resistance {self.nom} ({self.noeud_depart.nom} -> {self.noeud_arrivee.nom}) : {self.r} Ohm]"
 
-# TODO
-    # 
     #   coeff_u.U + coeff_i.I = coeff_c
     """ {2.x0 + 3.x1 = 4
         {5.x0 + 6.x1 = 7
@@ -39,16 +36,18 @@ class Resistance(Composant):
         (2 3) . (x0)   (4)
         (5 6)   (x1) = (7) """
 
+    def coeff_u(self) -> complex:
+        #coeff_u = complex(1.0)     #Force le type 'complex' sur la variable (cast)
+        #return coeff_u
+        return 1
 
-    def coeff_u(self) -> Complex:
-        pass
+    def coeff_i(self) -> complex:
+        return -self.r
 
-    def coeff_i(self) -> Complex:
-        pass
+    def coeff_c(self) -> complex:
+        return 0
 
-    def coeff_c(self, U: float, I: float) -> Complex:
-        pass 
-
+# Test de la classe Resistance
 if __name__ == "__main__":
     n2 = Noeud("n2", 0, 100)
     print(n2)
@@ -56,8 +55,10 @@ if __name__ == "__main__":
     print(n3)
     r1 = Resistance(n2, n3, "R1", 200)
     print(r1)
-    
-    #TEST NON FONCTIONNEL
-    #c1 = R1.coeffI
-    #c11 = float(sqrt(pow(c1.real)+pow(c1.imag)))
-    #print(c1)
+
+    u = r1.coeff_u()
+    print(u)
+
+    print(type(u))
+    print(type(r1.coeff_i()))
+    print(type(r1.coeff_c()))
