@@ -29,9 +29,16 @@ class Resistance(Composant):
         return f"[Resistance {self.nom} ({self.noeud_depart} -> {self.noeud_arrivee}) : {self.r} Ohm]"
 
 # TODO
-    # def bordel(Cu, Ci, Cc) -> question pour le prof
-    #   Cu.U + Ci.I = Cc 
-    #   return C Koa se bordel ?
+    # 
+    #   coeff_u.U + coeff_i.I = coeff_c
+    """ {2.x0 + 3.x1 = 4
+        {5.x0 + 6.x1 = 7
+
+        est équivalent à
+    
+        (2 3) . (x0)   (4)
+        (5 6)   (x1) = (7) """
+
 
     def coeff_u(self) -> Complex:
         pass
