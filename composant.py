@@ -6,7 +6,6 @@
 
 from abc import ABC, abstractmethod
 from noeud import Noeud
-from numbers import Complex
 
 class Composant(ABC):
 
@@ -31,13 +30,13 @@ class Composant(ABC):
         self._noeud_arrivee = noeud_arrivee
 
     @abstractmethod
-    def coeff_u(self) -> Complex:
+    def coeff_u(self) -> complex:
         pass
 
     @abstractmethod
-    def coeff_i(self) -> Complex:
+    def coeff_i(self) -> complex:
         pass
 
     @abstractmethod
-    def coeff_c(self) -> Complex:
+    def coeff_c(self) -> complex:
         pass
