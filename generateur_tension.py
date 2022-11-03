@@ -28,13 +28,13 @@ class Generateur_tension(Composant):
         return f"[GenerateurTension {self.nom} ({self.noeud_depart.nom} -> {self.noeud_arrivee.nom}) : fem {self.fem} Volt]"
 
     def coeff_u(self) -> complex:
-        return 0
+        return 1
 
     def coeff_i(self) -> complex:
         return 0
 
     def coeff_c(self) -> complex:
-        return self.fem
+        return -self.fem
 
 # Test de la classe Generateur_tension
 if __name__ == "__main__":
