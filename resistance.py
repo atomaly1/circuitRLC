@@ -37,7 +37,7 @@ class Resistance(Composant):
         (5 6)   (x1) = (7) """
 
     def coeff_u(self) -> complex:
-        #coeff_u = complex(1.0)     #Force le type 'complex' sur la variable (cast)
+        #coeff_u = complex(1,0)     #Force le type 'complex' sur la variable (cast)
         #return coeff_u
         return 1
 
