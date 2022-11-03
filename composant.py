@@ -6,6 +6,7 @@
 
 from abc import ABC, abstractmethod
 from noeud import Noeud
+from math import pi
 
 class Composant(ABC):
 
@@ -40,3 +41,7 @@ class Composant(ABC):
     @abstractmethod
     def coeff_c(self) -> complex:
         pass
+
+    # Définition statique de la fréquence et pulsation du circuit
+    f = 100/(2*pi)
+    w = 2.0*pi*f     
