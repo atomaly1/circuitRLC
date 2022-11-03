@@ -56,9 +56,17 @@ if __name__ == "__main__":
     r1 = Resistance(n2, n3, "R1", 200)
     print(r1)
 
-    u = r1.coeff_u()
-    print(u)
+    # Test coeff_u
+    cu = r1.coeff_u()
+    print(cu)
+    print(type(cu))
 
-    print(type(u))
-    print(type(r1.coeff_i()))
-    print(type(r1.coeff_c()))
+    # Test coeff_i
+    ci = r1.coeff_i()
+    print(ci)
+    print(type(ci))
+
+    # Test coeff_c
+    cc = r1.coeff_c()
+    print(cc)
+    print(type(cc))
