@@ -31,7 +31,7 @@ class Condensateur(Composant):
         return 1
 
     def coeff_i(self) -> complex:
-        return -1j*self.c*Composant.w
+        return 1j*self.c*Composant.w
 
     def coeff_c(self) -> complex:
         return 0
