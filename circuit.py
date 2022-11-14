@@ -1,7 +1,13 @@
 #from email.policy import default
 import sys
+from xmlrpc.client import Boolean
 from noeud import Noeud
 from composant import Composant
+from fil import Fil
+from inductance import Inductance
+from resistance import Resistance
+from condensateur import Condensateur
+from generateur_tension import Generateur_tension
 
 # TODO définir la classe CIRCUIT => attribut : liste de Noeuds 
 class Circuit:
@@ -20,10 +26,14 @@ class Circuit:
     # Construction de la chaine de caractère pour afficher le circuit
     def __str__(self): 
         str = ""
+        str += f"Circuit courant : \nCircuit (\n"
+        str += f"--------- noeuds :\n"
         for noeud in self.noeuds :
             str += f"{noeud}\n"
+        str += f"--------- composants :\n" 
         for composant in self.composants :
             str += f"{composant}\n"
+        str += f")\n"
         return str 
 
     # Retourne VRAI si le circuit n'est PAS vide, sinon retourne FAUX
@@ -108,21 +118,36 @@ class Circuit:
 
     @classmethod
     def create_circuit_test(cls) -> 'Circuit':
-        circuit = Circuit([])
-        circuit.add_noeud(Noeud("n1", 0, 0))
-        circuit.add_noeud(Noeud("n2", 0, 100))
-        circuit.add_noeud(Noeud("n3", 100, 100))
-        circuit.add_noeud(Noeud("n4", 100, 0))
+        circuit = Circuit([],[])
+        n1 = Noeud("n1", 0, 0)
+        n2 = Noeud("n2", 0, 100)
+        n3 = Noeud("n3", 100, 100)
+        n4 = Noeud("n4", 100, 0)
+        circuit.add_noeud(n1)
+        circuit.add_noeud(n2)
+        circuit.add_noeud(n3)
+        circuit.add_noeud(n4)
+
+        gen = Generateur_tension(n1,n2,"G",10)
+        r1 = Resistance(n2,n3,"R1",200)
+        l1 = Inductance(n3,n4,"L1",0.01)
+        r2 = Resistance(n4,n1,"R2",400)
+        c1 = Condensateur(n3,n1,"C1",0.0001)
+        circuit.add_composant(gen)
+        circuit.add_composant(r1)
+        circuit.add_composant(l1)
+        circuit.add_composant(r2)
+        circuit.add_composant(c1)
         return circuit
 
     # Permet la gestion du circuit par menu textuel 
-    def menu_circuit(self, circuit : 'Circuit') -> None:
+    def menu_circuit(self) -> Boolean:
 
         print("1 : afficher le circuit")
         print("2 : ajouter un noeud")
         print("3 : supprimer un noeud")
         print("4 : trouver noeud le plus proche")
-        print("0 : quitter")
+        print("0 : retour")
         print("votre choix ?")
 
         menu = input()
@@ -158,15 +183,21 @@ class Circuit:
                     print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
                 else : print("Circuit vide")
 
-            case '0': # Quitter
-                sys.exit(0)
+            case '0': # Retour
+                return False
 
             case _:
                 print("\nVeuillez entrer une réponse valide.\n")
 
-    def menu_principal(self) -> None:
-        # afficher menu courant 
+        return True
 
+# à utiliser pour tester les fonctions
+if __name__ == "__main__":
+
+    circuit= Circuit([],[])
+
+    while(True) : 
+        
         print("1 : créer un circuit vide")
         print("2 : créer le circuit test du sujet")
         print("3 : gérer le circuit courant")
@@ -177,26 +208,18 @@ class Circuit:
 
         match menu:
             case '1':
-                circuit = Circuit([])
+                circuit = Circuit([],[])
+                print(circuit)
             case '2':
                 circuit = Circuit.create_circuit_test()
+                print(circuit)
             case '3':
-                circuit.menu_circuit()
+                while(circuit.menu_circuit()) : 
+                    circuit.menu_circuit()
             case '0':
-                pass
+                sys.exit(0)
             case _:
                 print("\nVeuillez entrer une réponse valide.\n")
-
-# à utiliser pour tester les fonctions
-if __name__ == "__main__":
-
-    circuit = Circuit([])
-    n1 = Noeud("n1", 0, 100)
-    n2 = Noeud("n2", 100, 0)
-    circuit.add_noeud(n1)
-    circuit.add_noeud(n2)
-
-    while(True) : circuit.menu_circuit()
     
  
     
