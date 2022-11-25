@@ -10,30 +10,30 @@ from condensateur import Condensateur
 from generateur_tension import Generateur_tension
 
 class Circuit:
-    def __init__(self, noeuds: list, composants : list):
+    def __init__(self, noeuds: list[Noeud], composants : list[Composant]):
         self._noeuds = noeuds
         self._composants = composants
 
     @property
-    def noeuds(self) -> list:
+    def noeuds(self) -> list[Noeud]:
         return self._noeuds
 
     @property
-    def composants(self) -> list:
+    def composants(self) -> list[Composant]:
         return self._composants
 
     # Construction de la chaine de caractère pour afficher le circuit
     def __str__(self): 
-        str = ""
-        str += f"Circuit courant : \nCircuit (\n"
-        str += f"--------- noeuds :\n"
+        buffer = ""
+        buffer += f"Circuit courant : \nCircuit (\n"
+        buffer += f"--------- noeuds :\n"
         for noeud in self.noeuds :
-            str += f"{noeud}\n"
-        str += f"--------- composants :\n" 
+            buffer += f"{noeud}\n"
+        buffer += f"--------- composants :\n" 
         for composant in self.composants :
-            str += f"{composant}\n"
-        str += f")\n"
-        return str 
+            buffer += f"{composant}\n"
+        buffer += f")\n"
+        return buffer 
 
     # Retourne VRAI si le circuit n'est PAS vide, sinon retourne FAUX
     def _circuit_non_vide(self) -> bool :
