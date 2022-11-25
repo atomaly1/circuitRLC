@@ -9,7 +9,6 @@ from resistance import Resistance
 from condensateur import Condensateur
 from generateur_tension import Generateur_tension
 
-# TODO définir la classe CIRCUIT => attribut : liste de Noeuds 
 class Circuit:
     def __init__(self, noeuds: list, composants : list):
         self._noeuds = noeuds
@@ -60,11 +59,7 @@ class Circuit:
                 if noeud.nx < min_x:
                     min_x = noeud.nx   
         return min_x
-
-# TODO définir méthode max_y : Analogue à max_x
-# TODO définir méthode min_y : Analogue à max_x
-
-
+        
     # Renvoie l'ordonnée  maximale du circuit (ordonnée du noeud du circuit ayant la plus grande ordonnée). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
     def max_y(self) -> float :
         max_y = 0.0
@@ -106,7 +101,7 @@ class Circuit:
             raise Exception("le noeud est déjà dans le circuit")
         else : self.noeuds.append(noeud)
 
-#TODO  Ajoute un composant au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
+    # Ajoute un composant au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
     def add_composant(self, composant : Composant) -> None:
         if self.contien_composant(composant) :
             raise Exception("le composant est déjà dans le circuit")
@@ -118,7 +113,7 @@ class Circuit:
             raise Exception("le noeud n’est pas dans le circuit")
         else : self.noeuds.remove(noeud)
         
-#TODO Retire un composant du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
+    # Retire un composant du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
     def remove_composant(self, composant : Composant) -> None:
         if not self.contien_composant(composant) :
             raise Exception("le composant n’est pas dans le circuit")
