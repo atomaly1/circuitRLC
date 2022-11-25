@@ -166,44 +166,44 @@ class Circuit:
 
         menu = input()
 
-        match menu:
-            case '1': # Afficher le circuit
-                print("Circuit{\n---------- noeuds :")
-                print(self)
-                print("}") 
+        if menu == '1':  # Afficher le circuit
+            print("Circuit{\n---------- noeuds :")
+            print(self)
+            print("}") 
 
-            case '2': # Ajouter un noeud
-                new_noeud = Noeud.demande()
-                print(new_noeud)
-                self.add_noeud(new_noeud)
+        elif menu == '2': # Ajouter un noeud
+            new_noeud = Noeud.demande()
+            print(new_noeud)
+            self.add_noeud(new_noeud)
+        
+        elif menu == '3': # Supprimer un noeud
+            if self._circuit_non_vide():
+                index = self._choisi_noeud()
+                if index != 0 :
+                    self.remove_noeud(self.noeuds[index-1])
+            else : print("Circuit vide")
 
-            case '3': # Supprimer un noeud
-                if self._circuit_non_vide() :
-                    index = self._choisi_noeud()
-                    if index != 0 :
-                        self.remove_noeud(self.noeuds[index-1])
-                else : print("Circuit vide")
-                
-            case '4': # Trouver noeud le plus proche
-                # renvoyer le noeud pour lequel 'noeud.distance()' est le plus petit
-                if self._circuit_non_vide() :
-                    px = float(input("abscisse : "))
-                    py = float(input("ordonnée : "))
-                    # cherche le noeud le plus proche du circuit
-                    noeud_temp = self.noeuds[0] 
-                    for noeud in self.noeuds:
-                        if noeud.distance(px,py) < noeud_temp.distance(px,py):
-                            noeud_temp = noeud
-                    print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
-                else : print("Circuit vide")
+        elif menu == '4' :  # Trouver noeud le plus proche
+            # renvoyer le noeud pour lequel 'noeud.distance()' est le plus petit
+            if self._circuit_non_vide() :
+                px = float(input("abscisse : "))
+                py = float(input("ordonnée : "))
+                # cherche le noeud le plus proche du circuit
+                noeud_temp = self.noeuds[0] 
+                for noeud in self.noeuds:
+                    if noeud.distance(px,py) < noeud_temp.distance(px,py):
+                        noeud_temp = noeud
+                print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
+            else : print("Circuit vide")
 
-            case '0': # Retour
-                return False
+        elif menu == '0' : # Retour
+            return False 
 
-            case _:
-                print("\nVeuillez entrer une réponse valide.\n")
+        else :
+            print("\nVeuillez entrer une réponse valide.\n")
 
-        return True
+        return True  
+
 
 # à utiliser pour tester les fonctions
 if __name__ == "__main__":
@@ -220,20 +220,23 @@ if __name__ == "__main__":
 
         menu = input()
 
-        match menu:
-            case '1':
-                circuit = Circuit([],[])
-                print(circuit)
-            case '2':
-                circuit = Circuit.create_circuit_test()
-                print(circuit)
-            case '3':
-                while(circuit.menu_circuit()) : 
-                    circuit.menu_circuit()
-            case '0':
-                sys.exit(0)
-            case _:
-                print("\nVeuillez entrer une réponse valide.\n")
+        if menu == '1' :
+            circuit = Circuit([],[])
+            print(circuit)
+
+        elif menu == '2' :
+            circuit = Circuit.create_circuit_test()
+            print(circuit)
+
+        elif menu == '3' :
+            while circuit.menu_circuit() :
+                circuit.menu_circuit()
+
+        elif menu == '0' :
+            sys.exit(0)
+
+        else : 
+            print("\nVeuillez entrer une réponse valide.\n")
     
  
     
