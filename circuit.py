@@ -1,30 +1,39 @@
 #from email.policy import default
 import sys
+from xmlrpc.client import Boolean
 from noeud import Noeud
 from composant import Composant
+from fil import Fil
+from inductance import Inductance
+from resistance import Resistance
+from condensateur import Condensateur
+from generateur_tension import Generateur_tension
 
-# TODO définir la classe CIRCUIT => attribut : liste de Noeuds 
 class Circuit:
-    def __init__(self, noeuds: list, composants : list):
+    def __init__(self, noeuds: list[Noeud], composants : list[Composant]):
         self._noeuds = noeuds
         self._composants = composants
 
     @property
-    def noeuds(self) -> list:
+    def noeuds(self) -> list[Noeud]:
         return self._noeuds
 
     @property
-    def composants(self) -> list:
+    def composants(self) -> list[Composant]:
         return self._composants
 
     # Construction de la chaine de caractère pour afficher le circuit
     def __str__(self): 
-        str = ""
+        buffer = ""
+        buffer += f"Circuit courant : \nCircuit (\n"
+        buffer += f"--------- noeuds :\n"
         for noeud in self.noeuds :
-            str += f"{noeud}\n"
+            buffer += f"{noeud}\n"
+        buffer += f"--------- composants :\n" 
         for composant in self.composants :
-            str += f"{composant}\n"
-        return str 
+            buffer += f"{composant}\n"
+        buffer += f")\n"
+        return buffer 
 
     # Retourne VRAI si le circuit n'est PAS vide, sinon retourne FAUX
     def _circuit_non_vide(self) -> bool :
@@ -50,11 +59,7 @@ class Circuit:
                 if noeud.nx < min_x:
                     min_x = noeud.nx   
         return min_x
-
-# TODO définir méthode max_y : Analogue à max_x
-# TODO définir méthode min_y : Analogue à max_x
-
-
+        
     # Renvoie l'ordonnée  maximale du circuit (ordonnée du noeud du circuit ayant la plus grande ordonnée). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
     def max_y(self) -> float :
         max_y = 0.0
@@ -96,7 +101,7 @@ class Circuit:
             raise Exception("le noeud est déjà dans le circuit")
         else : self.noeuds.append(noeud)
 
-#TODO  Ajoute un composant au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
+    # Ajoute un composant au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
     def add_composant(self, composant : Composant) -> None:
         if self.contien_composant(composant) :
             raise Exception("le composant est déjà dans le circuit")
@@ -108,7 +113,7 @@ class Circuit:
             raise Exception("le noeud n’est pas dans le circuit")
         else : self.noeuds.remove(noeud)
         
-#TODO Retire un composant du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
+    # Retire un composant du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
     def remove_composant(self, composant : Composant) -> None:
         if not self.contien_composant(composant) :
             raise Exception("le composant n’est pas dans le circuit")
@@ -127,65 +132,86 @@ class Circuit:
 
     @classmethod
     def create_circuit_test(cls) -> 'Circuit':
-        circuit = Circuit([])
-        circuit.add_noeud(Noeud("n1", 0, 0))
-        circuit.add_noeud(Noeud("n2", 0, 100))
-        circuit.add_noeud(Noeud("n3", 100, 100))
-        circuit.add_noeud(Noeud("n4", 100, 0))
+        circuit = Circuit([],[])
+        n1 = Noeud("n1", 0, 0)
+        n2 = Noeud("n2", 0, 100)
+        n3 = Noeud("n3", 100, 100)
+        n4 = Noeud("n4", 100, 0)
+        circuit.add_noeud(n1)
+        circuit.add_noeud(n2)
+        circuit.add_noeud(n3)
+        circuit.add_noeud(n4)
+
+        gen = Generateur_tension(n1,n2,"G",10)
+        r1 = Resistance(n2,n3,"R1",200)
+        l1 = Inductance(n3,n4,"L1",0.01)
+        r2 = Resistance(n4,n1,"R2",400)
+        c1 = Condensateur(n3,n1,"C1",0.0001)
+        circuit.add_composant(gen)
+        circuit.add_composant(r1)
+        circuit.add_composant(l1)
+        circuit.add_composant(r2)
+        circuit.add_composant(c1)
         return circuit
 
     # Permet la gestion du circuit par menu textuel 
-    def menu_circuit(self, circuit : 'Circuit') -> None:
+    def menu_circuit(self) -> Boolean:
 
         print("1 : afficher le circuit")
         print("2 : ajouter un noeud")
         print("3 : supprimer un noeud")
         print("4 : trouver noeud le plus proche")
-        print("0 : quitter")
+        print("0 : retour")
         print("votre choix ?")
 
         menu = input()
 
-        match menu:
-            case '1': # Afficher le circuit
-                print("Circuit{\n---------- noeuds :")
-                print(self)
-                print("}") 
+        if menu == '1':  # Afficher le circuit
+            print("Circuit{\n---------- noeuds :")
+            print(self)
+            print("}") 
 
-            case '2': # Ajouter un noeud
-                new_noeud = Noeud.demande()
-                print(new_noeud)
-                self.add_noeud(new_noeud)
+        elif menu == '2': # Ajouter un noeud
+            new_noeud = Noeud.demande()
+            print(new_noeud)
+            self.add_noeud(new_noeud)
+        
+        elif menu == '3': # Supprimer un noeud
+            if self._circuit_non_vide():
+                index = self._choisi_noeud()
+                if index != 0 :
+                    self.remove_noeud(self.noeuds[index-1])
+            else : print("Circuit vide")
 
-            case '3': # Supprimer un noeud
-                if self._circuit_non_vide() :
-                    index = self._choisi_noeud()
-                    if index != 0 :
-                        self.remove_noeud(self.noeuds[index-1])
-                else : print("Circuit vide")
-                
-            case '4': # Trouver noeud le plus proche
-                # renvoyer le noeud pour lequel 'noeud.distance()' est le plus petit
-                if self._circuit_non_vide() :
-                    px = float(input("abscisse : "))
-                    py = float(input("ordonnée : "))
-                    # cherche le noeud le plus proche du circuit
-                    noeud_temp = self.noeuds[0] 
-                    for noeud in self.noeuds:
-                        if noeud.distance(px,py) < noeud_temp.distance(px,py):
-                            noeud_temp = noeud
-                    print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
-                else : print("Circuit vide")
+        elif menu == '4' :  # Trouver noeud le plus proche
+            # renvoyer le noeud pour lequel 'noeud.distance()' est le plus petit
+            if self._circuit_non_vide() :
+                px = float(input("abscisse : "))
+                py = float(input("ordonnée : "))
+                # cherche le noeud le plus proche du circuit
+                noeud_temp = self.noeuds[0] 
+                for noeud in self.noeuds:
+                    if noeud.distance(px,py) < noeud_temp.distance(px,py):
+                        noeud_temp = noeud
+                print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
+            else : print("Circuit vide")
 
-            case '0': # Quitter
-                sys.exit(0)
+        elif menu == '0' : # Retour
+            return False 
 
-            case _:
-                print("\nVeuillez entrer une réponse valide.\n")
+        else :
+            print("\nVeuillez entrer une réponse valide.\n")
 
-    def menu_principal(self) -> None:
-        # afficher menu courant 
+        return True  
 
+
+# à utiliser pour tester les fonctions
+if __name__ == "__main__":
+
+    circuit= Circuit([],[])
+
+    while(True) : 
+        
         print("1 : créer un circuit vide")
         print("2 : créer le circuit test du sujet")
         print("3 : gérer le circuit courant")
@@ -194,28 +220,23 @@ class Circuit:
 
         menu = input()
 
-        match menu:
-            case '1':
-                circuit = Circuit([])
-            case '2':
-                circuit = Circuit.create_circuit_test()
-            case '3':
+        if menu == '1' :
+            circuit = Circuit([],[])
+            print(circuit)
+
+        elif menu == '2' :
+            circuit = Circuit.create_circuit_test()
+            print(circuit)
+
+        elif menu == '3' :
+            while circuit.menu_circuit() :
                 circuit.menu_circuit()
-            case '0':
-                pass
-            case _:
-                print("\nVeuillez entrer une réponse valide.\n")
 
-# à utiliser pour tester les fonctions
-if __name__ == "__main__":
+        elif menu == '0' :
+            sys.exit(0)
 
-    circuit = Circuit([])
-    n1 = Noeud("n1", 0, 100)
-    n2 = Noeud("n2", 100, 0)
-    circuit.add_noeud(n1)
-    circuit.add_noeud(n2)
-
-    while(True) : circuit.menu_circuit()
+        else : 
+            print("\nVeuillez entrer une réponse valide.\n")
     
  
     
