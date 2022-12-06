@@ -42,20 +42,20 @@ if __name__ == "__main__":
     print(n3)
     n4 = Noeud("n4", 100, 0)
     print(n4)
-    l1 = Inductance(n3, n4, "L1", 0.01)
-    print(l1)
+    c1 = Condensateur(n3, n4, "C1", 0.01)
+    print(c1)
 
     # Test coeff_u
-    cu = l1.coeff_u()
+    cu = c1.coeff_u()
     print(cu)
     print(type(cu))
 
     # Test coeff_i
-    ci = l1.coeff_i()
+    ci = c1.coeff_i()
     print(ci)
     print(type(ci))
 
     # Test coeff_c
-    cc = l1.coeff_c()
+    cc = c1.coeff_c()
     print(cc)
     print(type(cc))
