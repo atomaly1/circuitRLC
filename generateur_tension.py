@@ -1,7 +1,7 @@
 from composant import Composant
 from noeud import Noeud
 
-class Generateur_tension(Composant):
+class GenerateurTension(Composant):
     
     def __init__(self, noeud_depart: Noeud, noeud_arrivee: Noeud, nom: str, fem: float) -> None:
         super().__init__(noeud_depart, noeud_arrivee)
@@ -36,13 +36,13 @@ class Generateur_tension(Composant):
     def coeff_c(self) -> complex:
         return -self.fem
 
-# Test de la classe Generateur_tension
+# Test de la classe GenerateurTension
 if __name__ == "__main__":
     n1 = Noeud("n1", 0, 0)
     print(n1)
     n2 = Noeud("n2", 0, 100)
     print(n2)
-    g1 = Generateur_tension(n1, n2, "G", 10)
+    g1 = GenerateurTension(n1, n2, "G", 10)
     print(g1)
 
     # Test coeff_u
