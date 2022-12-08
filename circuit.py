@@ -7,7 +7,7 @@ from fil import Fil
 from inductance import Inductance
 from resistance import Resistance
 from condensateur import Condensateur
-from generateur_tension import Generateur_tension
+from generateur_tension import GenerateurTension
 
 class Circuit:
     def __init__(self, noeuds: list[Noeud], composants : list[Composant]):
@@ -142,7 +142,7 @@ class Circuit:
         circuit.add_noeud(n3)
         circuit.add_noeud(n4)
 
-        gen = Generateur_tension(n1,n2,"G",10)
+        gen = GenerateurTension(n1,n2,"G",10)
         r1 = Resistance(n2,n3,"R1",200)
         l1 = Inductance(n3,n4,"L1",0.01)
         r2 = Resistance(n4,n1,"R2",400)
