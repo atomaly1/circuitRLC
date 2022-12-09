@@ -1,19 +1,24 @@
-import PySide6.QtWidgets as qtw
-import PySide6.QtGui as qtg
-import random
+import sys
 
-class FrameAvecBordure(qtw.QFrame):
-    # une variable de classe pour définir un comportement par défaut
-    # si modifiée : modifie la bordure de toutes les FrameAvecBordure
-    # ou le paramètre 'bordure' n'est pas explicitement fourni lors
-    # de l'__init__
-    DEFAULT_BORDURE = False
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidgetAction
 
-    # DEFAULT_BORDURE peut être utilisé dans __init__
-    def __init__(self,bordure : bool = DEFAULT_BORDURE):
-        super().__init__()
-        if bordure :
-            # une bordure simple; de nombreuses autres options possibles
-            self.setFrameStyle(qtw.QFrame.Panel | qtw.QFrame.Plain)
-            self.setLineWidth(1)
+class MainView(QMainWindow):
 
+    def __init__(self):
+        super().__init__() # Appel du constructeur parent
+        self.setWindowTitle("CircuitRLC") # Titre de la fenêtre
+        self.setWindowIcon(QIcon("icons/rlc_project_v4.ico")) 
+        self.resize(400, 300)
+
+if __name__ == '__main__':
+    # On crée l'instance d'application en lui passant le tableau des arguments.
+    app = QApplication(sys.argv)
+
+    # TODO : Instancier et afficher votre fenêtre graphique.
+    main_view = MainView()
+    main_view.show()
+
+    # On démarre la boucle de gestion des événements.
+    sys.exit(app.exec())
