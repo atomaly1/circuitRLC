@@ -9,7 +9,7 @@ class MainView(QMainWindow):
     def __init__(self):
         super().__init__() # Appel du constructeur parent
         self.setWindowTitle("CircuitRLC") # Titre de la fenêtre
-        self.setWindowIcon(QIcon("icons/rlc_project_v4.ico")) 
+        self.setWindowIcon(QIcon("icons/rlc_project_v2.ico")) 
         self.resize(400, 300)
 
 if __name__ == '__main__':
