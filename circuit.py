@@ -9,7 +9,7 @@ from resistance import Resistance
 from condensateur import Condensateur
 from generateur_tension import Generateur_tension
 
-class Circuit:
+class Circuit():
     def __init__(self, noeuds: list[Noeud], composants : list[Composant]):
         self._noeuds = noeuds
         self._composants = composants
