@@ -2,27 +2,19 @@ import cmath
 import numpy as np
 from typing import List
 import sys
+from circuit import Circuit
 
 
 
 """
-Loi d'Ohm => Pour chaque composant : a*U + b*I = c
-Loi des noeuds => Somme des I = 0
-Loi des mailles
-
-0: [ a0 b0  0  0  0  0  0  0  0  0 ]   [ U0 ]   [ c0 ]
-1: [  0  0 a1 b1  0  0  0  0  0  0 ]   [ I0 ]   [ c1 ]
-2: [  0  0  0  0 a2 b2  0  0  0  0 ]   [ U1 ]   [ c2 ]
-3: [  0  0  0  0  0  0 a3 b3  0  0 ]   [ I1 ]   [ c3 ]
-4: [  0  0  0  0  0  0  0  0 a4 b4 ] * [ U2 ] = [ c4 ]
-5: [                               ]   [ I2 ]   [    ]
-6: [                               ]   [ U3 ]   [    ]
-7: [                               ]   [ I3 ]   [    ]
-8: [                               ]   [ U4 ]   [    ]
-9: [                               ]   [ I4 ]   [    ]
+n nb de noeuds
+c nb de composants
+Loi d'Ohm => Pour chaque composant : a*U + b*I = c => c équations
+Loi des noeuds => Somme des I = 0 => n-1 équations
+Loi des mailles => 2*c - c - n-1 = c-n-1 équations
 """
 
-class Sys_lineaire() : # systeme lineaire de la forme ax = b
+class SysLineaire() : # systeme lineaire de la forme ax = b
     def __init__(self, mat_a : list[list[complex]], mat_b : list[complex] ) -> None : 
         self._mat_a = mat_a
         self._mat_b = mat_b
@@ -46,7 +38,34 @@ class Sys_lineaire() : # systeme lineaire de la forme ax = b
         
         return np.around(np.linalg.solve(self._mat_a, self._mat_b),2)
 
-def sys_lin_exemple(omega : float) -> Sys_lineaire:
+    @classmethod
+    def create_sys_lin(cls, circuit : Circuit, omega : float) -> 'SysLineaire':
+
+        nb_composants = len(circuit.composants)
+        nb_inconnus = nb_composants * 2
+
+        mat_a = np.zeros((nb_inconnus,nb_inconnus), dtype=complex)
+        mat_b = np.zeros(nb_inconnus, dtype=complex)
+
+        '''
+        for row_index, row in enumerate(mat_a):
+            for col_index, item in enumerate(row):
+                print(mat_a[row_index][col_index])
+        '''
+
+        # Equations d'impédances
+        for i in range(nb_composants):
+            mat_a[i, 2*i] = circuit.composants[i].coeff_u()
+            mat_a[i, 2*i+1] = circuit.composants[i].coeff_i()
+            mat_b[i] = circuit.composants[i].coeff_c()
+                
+        # Loi des noeuds
+
+        # Loi des mailles
+        return SysLineaire(mat_a, mat_b)
+
+
+def sys_lin_exemple(omega : float) -> SysLineaire:
 
     """
     Nous partons du circuit exemple :
@@ -94,13 +113,13 @@ def sys_lin_exemple(omega : float) -> Sys_lineaire:
     i += 1
     # resistance R2 : U1 - R2.I1 = 0
     # 3: [ 0  0  0  0  0  0  1  -400  0  0 ]  [ 0 ]
-    mat_a[i,3*2] = complex(1,0)
-    mat_a[i,3*2+1] = complex(-400,0)
+    mat_a[i,2*3] = complex(1,0)
+    mat_a[i,2*3+1] = complex(-400,0)
     i += 1
     # condensateur C1 : U1 - 1/(j.C1.omega).I1 = 0
     # 4: [ 0  0  0  0  0  0  0  0  1  -1/j.0.0001.omega ]  [ 0 ]
-    mat_a[i,4*2] = complex(1,0)
-    mat_a[i,4*2+1] = -1/(1j*0.0001*omega)
+    mat_a[i,2*4] = complex(1,0)
+    mat_a[i,2*4+1] = -1/(1j*0.0001*omega)
     i += 1
 
     #----------- loi des noeuds
@@ -140,9 +159,12 @@ def sys_lin_exemple(omega : float) -> Sys_lineaire:
     mat_a[i,2*4] = complex(-1,0)
     i += 1
 
-    return Sys_lineaire(mat_a, mat_b)
+    return SysLineaire(mat_a, mat_b)
 
 if __name__ == '__main__':
+    omega = 100
+    
+    """
     sys = sys_lin_exemple(100)
     print(sys)
     sol = sys.solve()
@@ -155,4 +177,24 @@ if __name__ == '__main__':
         print(", ", end='')
         print(round(cmath.polar(elmt)[1], 2), end='')
         print("]")
+    """
+   
+    
+    circuit = Circuit.create_circuit_test()
+    print(circuit)
+    lin_sys = SysLineaire.create_sys_lin(circuit,omega)
+    print(lin_sys)
+    
+    '''
+    sol = lin_sys.solve()
 
+    print("solution : ")
+    
+    for elmt in sol:
+        print("[", end='')
+        print(round(cmath.polar(elmt)[0], 2),end='')
+        print(", ", end='')
+        print(round(cmath.polar(elmt)[1], 2), end='')
+        print("]")
+
+    '''
