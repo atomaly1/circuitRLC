@@ -40,6 +40,11 @@ class Circuit():
         if len(self.noeuds) == 0 : return False
         else : return True
 
+    # Retourne VRAI si le circuit possède des composants, sinon retourne FAUX
+    def _circuit_sans_composants(self) -> bool :
+        if len(self.composants) == 0 : return False
+        else : return True    
+
     # Renvoie l’abscisse maximale du circuit (abscisse du noeud du circuit ayant la plus grande abscisse). Retourne 0.0 si le circuit est vide (ne contient pas de noeuds)
     def max_x(self) -> float :
         max_x = 0.0
@@ -128,7 +133,18 @@ class Circuit():
         num_noeud_choisi = int(input())
         if num_noeud_choisi < 0 or num_noeud_choisi > len(self.noeuds):
             raise Exception("choix non valide")
-        return num_noeud_choisi    
+        return num_noeud_choisi   
+
+    # méthode utilitaire pour la gestion du menu 
+    def _choisi_composant(self) -> int:
+        print("Taper le numéro du Composant à sélectionner :")
+        for composant in self.composants :
+            print(self.composants.index(composant)+1, ": [", composant, "]")
+        print("0 : pour annuler la sélection")
+        num_composant_choisi = int(input())
+        if num_composant_choisi < 0 or num_composant_choisi > len(self.composants):
+            raise Exception("choix non valide")
+        return num_composant_choisi  
 
     @classmethod
     def create_circuit_test(cls) -> 'Circuit':
@@ -161,6 +177,8 @@ class Circuit():
         print("2 : ajouter un noeud")
         print("3 : supprimer un noeud")
         print("4 : trouver noeud le plus proche")
+        print("5 : ajouter un composant")
+        print("6 : supprimer un composant")
         print("0 : retour")
         print("votre choix ?")
 
@@ -195,6 +213,24 @@ class Circuit():
                         noeud_temp = noeud
                 print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
             else : print("Circuit vide")
+
+        # TODO : implémenter la méthode demande() dans la classe composant + tester
+        elif menu == '5' : # Ajouter un composant
+            """
+            1. Demander le noeud de départ et le noeud d'arrivé
+            2. Demander le type de composant
+            3. Demander les paramètres suivants le type (nom, valeur)
+            """
+            new_composant = Composant.demande()
+            print(new_composant)
+            self.add_composant(new_composant)
+
+        elif menu == '6' : # Supprimer un composant
+            if self._circuit_non_vide():
+                index = self._choisi_composant()
+                if index != 0 :
+                    self.remove_composant(self.composants[index-1])
+            else : print("Circuit sans composants")
 
         elif menu == '0' : # Retour
             return False 
