@@ -43,5 +43,5 @@ class Composant(ABC):
         pass
 
     # Définition statique de la fréquence et pulsation du circuit
-    f = 100/(2*pi)
-    w = 2.0*pi*f     
+    # f = 100/(2*pi)
+    w = 100    
