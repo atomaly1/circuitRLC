@@ -36,6 +36,12 @@ class GenerateurTension(Composant):
     def coeff_c(self) -> complex:
         return -self.fem
 
+    @classmethod
+    def demande(cls, noeud_depart : Noeud, noeud_arrivee : Noeud) -> 'GenerateurTension':
+        nom = input("Nom :\n")
+        valeur = float(input("Tension (en Volt) :\n"))
+        return GenerateurTension(noeud_depart, noeud_arrivee, nom, valeur)
+
 # Test de la classe GenerateurTension
 if __name__ == "__main__":
     n1 = Noeud("n1", 0, 0)

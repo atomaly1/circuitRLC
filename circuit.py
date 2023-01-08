@@ -146,6 +146,19 @@ class Circuit():
             raise Exception("choix non valide")
         return num_composant_choisi  
 
+    # méthode utilitaire pour la gestion du menu
+    def _choisi_type_composant(self) -> int:
+        print("Choisir le type de composant :")
+        print("1 : Résistance")
+        print("2 : Condensateur")
+        print("3 : Inductance")
+        print("4 : Générateur de tension")
+        print("5 : Fil")
+        num_choisi = int(input())
+        if num_choisi < 1 or num_choisi > 5:
+            raise Exception("choix non valide")
+        return num_choisi  
+
     @classmethod
     def create_circuit_test(cls) -> 'Circuit':
         circuit = Circuit([],[])
@@ -214,16 +227,32 @@ class Circuit():
                 print("Le noeud le plus proche de (", px, ",", py, ") est :", noeud_temp)
             else : print("Circuit vide")
 
-        # TODO : implémenter la méthode demande() dans la classe composant + tester
         elif menu == '5' : # Ajouter un composant
-            """
-            1. Demander le noeud de départ et le noeud d'arrivé
-            2. Demander le type de composant
-            3. Demander les paramètres suivants le type (nom, valeur)
-            """
-            new_composant = Composant.demande()
-            print(new_composant)
-            self.add_composant(new_composant)
+            print("Choisir le noeud de départ:\n")
+            index_noeud_depart = self._choisi_noeud()
+            noeud_depart = self.noeuds[index_noeud_depart - 1]
+            print("Choisir le noeud d'arrivée:\n")
+            index_noeud_arrivee = self._choisi_noeud()
+            noeud_arrivee = self.noeuds[index_noeud_arrivee - 1]
+            print("Choisir le type de composant:\n")
+
+            match self._choisi_type_composant():
+                case 1:
+                    new_resistance = Resistance.demande(noeud_depart, noeud_arrivee)
+                    self.add_composant(new_resistance)
+                case 2:
+                    new_condensateur = Condensateur.demande(noeud_depart, noeud_arrivee)
+                    self.add_composant(new_condensateur)
+                case 3:
+                    new_inductance = Inductance.demande(noeud_depart, noeud_arrivee)
+                    self.add_composant(new_inductance)
+                case 4:
+                    new_generateur = GenerateurTension.demande(noeud_depart, noeud_arrivee)
+                    self.add_composant(new_generateur)
+                case 5:
+                    self.add_composant(Fil(noeud_depart, noeud_arrivee))
+                case _:
+                    raise Exception("problème ajouter un composant")
 
         elif menu == '6' : # Supprimer un composant
             if self._circuit_non_vide():

@@ -36,6 +36,12 @@ class Inductance(Composant):
     def coeff_c(self) -> complex:
         return 0
 
+    @classmethod
+    def demande(cls, noeud_depart : Noeud, noeud_arrivee : Noeud) -> 'Inductance':
+        nom = input("Nom :\n")
+        valeur = float(input("Inductance (en Henry) :\n"))
+        return Inductance(noeud_depart, noeud_arrivee, nom, valeur)
+
 # Test de la classe Inductance
 if __name__ == "__main__":
     n3 = Noeud("n3", 100, 100)

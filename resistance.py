@@ -46,6 +46,13 @@ class Resistance(Composant):
 
     def coeff_c(self) -> complex:
         return 0
+        
+    @classmethod
+    def demande(cls, noeud_depart : Noeud, noeud_arrivee : Noeud) -> 'Resistance':
+        nom = input("Nom :\n")
+        valeur = float(input("Resistance (en Ohm) :\n"))
+        return Resistance(noeud_depart, noeud_arrivee, nom, valeur)
+
 
 # Test de la classe Resistance
 if __name__ == "__main__":

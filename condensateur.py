@@ -31,10 +31,16 @@ class Condensateur(Composant):
         return 1
 
     def coeff_i(self) -> complex:
-        return 1j*self.c*Composant.w
+        return -1/(1j*self.c*Composant.w)
 
     def coeff_c(self) -> complex:
         return 0
+
+    @classmethod
+    def demande(cls, noeud_depart : Noeud, noeud_arrivee : Noeud) -> 'Condensateur':
+        nom = input("Nom :\n")
+        valeur = float(input("Capacité (en Farad) :\n"))
+        return Condensateur(noeud_depart, noeud_arrivee, nom, valeur)
 
 # Test de la classe Condensateur
 if __name__ == "__main__":
