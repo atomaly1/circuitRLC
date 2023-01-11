@@ -2,6 +2,8 @@ from composant import Composant
 from noeud import Noeud
 
 class GenerateurTension(Composant):
+
+    # générateur : coeff_u.U0 = fem + coeff_i.I0 <=> 1.U0 - 0.I0 = fem (on considère le déphase nul aux bornes du générateur)
     
     def __init__(self, noeud_depart: Noeud, noeud_arrivee: Noeud, nom: str, fem: float) -> None:
         super().__init__(noeud_depart, noeud_arrivee)
@@ -34,7 +36,7 @@ class GenerateurTension(Composant):
         return 0
 
     def coeff_c(self) -> complex:
-        return -self.fem
+        return self.fem
 
     @classmethod
     def demande(cls, noeud_depart : Noeud, noeud_arrivee : Noeud) -> 'GenerateurTension':
