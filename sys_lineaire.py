@@ -38,12 +38,24 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         
         return np.around(np.linalg.solve(self._mat_a, self._mat_b),2)
 
+    def _count_dipoles(circuit : Circuit) -> int :
+        counter = 0
+        for composant in circuit.composants:
+            if str(type(composant)) != "<class 'fil.Fil'>":
+                counter += 1
+        return counter
+
     @classmethod
     def create_sys_lin(cls, circuit : Circuit, omega : float) -> 'SysLineaire':
 
+        # Troubleshooting
+        # TODO : vérifier que le circuit sois fermé
+
         nb_composants = len(circuit.composants)
         nb_inconnus = nb_composants * 2
+        index_ligne = 0
 
+        # on cherche a écrire le système sous la forme matrcielle : A * X = B
         mat_a = np.zeros((nb_inconnus,nb_inconnus), dtype=complex)
         mat_b = np.zeros(nb_inconnus, dtype=complex)
 
@@ -58,8 +70,18 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
             mat_a[i, 2*i] = circuit.composants[i].coeff_u()
             mat_a[i, 2*i+1] = circuit.composants[i].coeff_i()
             mat_b[i] = circuit.composants[i].coeff_c()
+            index_ligne += 1
                 
         # Loi des noeuds
+        nb_noeuds = len(circuit.noeuds)
+
+        for i in range(0, nb_noeuds - 1) :
+            for j in range(0, nb_composants) :
+                if circuit.noeuds[i] == circuit.composants[j].noeud_depart:
+                    mat_a[index_ligne, 2*j+1] = 1
+                elif circuit.noeuds[i] == circuit.composants[j].noeud_arrivee:
+                    mat_a[index_ligne, 2*j+1] = -1
+            index_ligne += 1
 
         # Loi des mailles
         return SysLineaire(mat_a, mat_b)
