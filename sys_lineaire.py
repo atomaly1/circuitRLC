@@ -65,14 +65,14 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
                 print(mat_a[row_index][col_index])
         '''
 
-        # Equations d'impédances
+        # Equations d'impédances (sans Fils)
         for i in range(nb_composants):
             mat_a[i, 2*i] = circuit.composants[i].coeff_u()
             mat_a[i, 2*i+1] = circuit.composants[i].coeff_i()
             mat_b[i] = circuit.composants[i].coeff_c()
             index_ligne += 1
                 
-        # Loi des noeuds
+        # Loi des noeuds (sans Fils)
         nb_noeuds = len(circuit.noeuds)
 
         for i in range(0, nb_noeuds - 1) :
@@ -83,7 +83,33 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
                     mat_a[index_ligne, 2*j+1] = -1
             index_ligne += 1
 
-        # Loi des mailles
+        # Loi des mailles simplifiée
+
+        temp_composants = circuit.composants
+        maille = []
+        noeud_base = circuit.noeuds[0]
+        noeud_courant = noeud_base
+
+        def ajouter_dans_maille(snoeud_courant):
+            for composant in temp_composants :
+                if snoeud_courant == composant.noeud_depart :
+                    maille.append(composant)
+                    temp_composants.remove(composant)
+                    snoeud_courant = composant.noeud_arrivee
+                    break 
+
+        for i in range(0,nb_noeuds-1) :
+            noeud_base = circuit.noeuds[i]
+            ajouter_dans_maille(noeud_courant) 
+
+
+        print(maille)
+
+
+              
+
+
+
         return SysLineaire(mat_a, mat_b)
 
 
