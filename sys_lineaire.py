@@ -1,8 +1,6 @@
-import cmath
 import numpy as np
-from typing import List
-import sys
 from circuit import Circuit
+from composant import Composant
 
 
 
@@ -35,7 +33,6 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         return buffer
 
     def solve(self) -> list[complex] : 
-        
         return np.around(np.linalg.solve(self._mat_a, self._mat_b),2)
 
     def _count_dipoles(circuit : Circuit) -> int :
@@ -55,7 +52,7 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         nb_inconnus = nb_composants * 2
         index_ligne = 0
 
-        # on cherche a écrire le système sous la forme matrcielle : A * X = B
+        # On cherche a écrire le système sous la forme matrcielle : A * X = B
         mat_a = np.zeros((nb_inconnus,nb_inconnus), dtype=complex)
         mat_b = np.zeros(nb_inconnus, dtype=complex)
 
@@ -75,8 +72,8 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         # Loi des noeuds (sans Fils)
         nb_noeuds = len(circuit.noeuds)
 
-        for i in range(0, nb_noeuds - 1) :
-            for j in range(0, nb_composants) :
+        for i in range(nb_noeuds - 1) :
+            for j in range(nb_composants - 1) :
                 if circuit.noeuds[i] == circuit.composants[j].noeud_depart:
                     mat_a[index_ligne, 2*j+1] = 1
                 elif circuit.noeuds[i] == circuit.composants[j].noeud_arrivee:
@@ -85,33 +82,60 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
 
         # Loi des mailles simplifiée
 
-        temp_composants = circuit.composants
+        # Déclaration des variables
+        temp_composants = circuit.composants.copy()
         maille = []
-        noeud_base = circuit.noeuds[0]
+        liste_mailles = []
+        noeud_base = circuit.noeuds[2]
         noeud_courant = noeud_base
 
-        def ajouter_dans_maille(snoeud_courant):
+        # Déclaration des fonctions
+        def liste_composants_ayant_noeud_départ(snoeud_depart, scircuit) -> list:
+            liste_composants =[]            
+            for composant in scircuit.composants :
+                if composant.noeud_depart == snoeud_depart :
+                    liste_composants.append(composant)
+            return liste_composants
+
+
+        def ajouter_composant_dans_maille(snoeud_courant) : # Ajoute un composant dans la maille et retourne le nouveau noeud courant
             for composant in temp_composants :
                 if snoeud_courant == composant.noeud_depart :
                     maille.append(composant)
                     temp_composants.remove(composant)
                     snoeud_courant = composant.noeud_arrivee
-                    break 
+                    return snoeud_courant
 
-        for i in range(0,nb_noeuds-1) :
-            noeud_base = circuit.noeuds[i]
-            ajouter_dans_maille(noeud_courant) 
+        def ajouter_maille_dans_circuit(smaille) :
+            for composant in smaille :
+                for i in range(nb_composants - 1) :
+                    if composant == circuit.composants[i] :
+                        if str(type(composant))  == "<class 'generateur_tension.GenerateurTension'>" :
+                            mat_a[index_ligne, 2*i] = 1
+                        else : 
+                            mat_a[index_ligne, 2*i] = -1
 
+        noeud_courant = ajouter_composant_dans_maille(noeud_courant)
+        while noeud_courant != noeud_base :
+            noeud_courant = ajouter_composant_dans_maille(noeud_courant) 
+        # TODO check si la maille est une permutation, si oui exploration d'une nouvelle maille
 
         print(maille)
-
-
-              
-
-
+        liste_mailles.append(maille)
+        # Ajoute la maille à la matrice
+        ajouter_maille_dans_circuit(maille)
+        index_ligne += 1
+                        
+                    
+             
+        '''
+        for i in range(0,nb_noeuds-1) :
+            noeud_base = circuit.noeuds[i]
+            noeud_courant = ajouter_dans_maille(noeud_courant)
+            #noeud_courant = ajouter_dans_maille(noeud_courant)
+        '''         
 
         return SysLineaire(mat_a, mat_b)
-
 
 def sys_lin_exemple(omega : float) -> SysLineaire:
 
