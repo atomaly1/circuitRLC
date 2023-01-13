@@ -1,8 +1,19 @@
+'''
+Created on 25 juin 2022
+
+@author: Eliott, Lucie & Emeric
+'''
+
 import sys, webbrowser
 
 from PySide6.QtCore import QSize, Qt, Slot, QTextStream, QFile 
-from PySide6.QtGui import QIcon, QAction, QKeySequence, QIntValidator
+from PySide6.QtGui import QIcon, QAction, QKeySequence, QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit
+
+from circuit import Circuit
+from interface_graphique import InterfaceGraphique
+
+#from interface_graphique import InterfaceGraphique
 
 #TODO Ajouter au GSheet
 # Fenêtre principale (selon le "Dock Widget Example" : https://doc.qt.io/qtforpython/examples/example_widgets_mainwindows_dockwidgets.html?highlight=dock%20widget#dock-widget-example)
@@ -12,10 +23,8 @@ class MainWindow(QMainWindow):
         super().__init__() # Appel du constructeur parent
 
         # Central Widget
-#TODO Importer le fichier interface_graphique.py
-        #interface_graphique = InterfaceGraphique()
-        self._text_edit = QTextEdit()
-        self.setCentralWidget(self._text_edit)
+        interface_graphique = InterfaceGraphique()
+        self.setCentralWidget(interface_graphique)
 
         # Design
         self.setWindowTitle('CircuitRLC')                       # Titre
@@ -40,7 +49,7 @@ class MainWindow(QMainWindow):
         self._action_nouveau = QAction('Nouveau', self,
         shortcut=QKeySequence.New, 
         statusTip="Créer un nouveau circuit", triggered=self.nouveau)
-        
+
         # Action ouvrir
         self._action_ouvrir = QAction('Ouvrir', self,
         shortcut=QKeySequence.Open,
@@ -78,7 +87,7 @@ class MainWindow(QMainWindow):
         
         # Action Github
         self._action_github = QAction('GitHub CircuitRLC', self,
-        shortcut=QKeySequence('Ctrl+G'),
+        shortcut=QKeySequence('F2'),
         statusTip="Afficher le GitHub du projet CircuitRLC", triggered=self.github)
 
     # Boutons
@@ -275,39 +284,50 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def ajouter_noeud(self):
-#TODO Pop-up ajouter noeud
      
         # Design
         self._popup_noeud = QDialog(self)
         self._popup_noeud.setWindowTitle("Ajouter un noeud")
-        self._popup_noeud.setFixedSize(178,130)
+        self._popup_noeud.setMinimumSize(178,130)
+        self._popup_noeud.setMaximumSize(268,130)
+        self._popup_noeud.resize(268,130)
 
         # Layout
         layout = QFormLayout(self._popup_noeud)
+
         le1 = QLineEdit("")
-        #le1.setValidator(QTextValidator())
+        le1.setValidator(QRegularExpressionValidator("\\N{0,15}")) # https://www.ics.com/blog/qt-support-input-masks-and-validators
+        #le2.setPlaceholderText("Nom du noeud")
         layout.addRow(QLabel("Nom : "), le1)
+
         le2 = QLineEdit("")
-        le2.setValidator(QIntValidator())
+        le2.setValidator(QRegularExpressionValidator("[0-9]\\d{0,2}"))
         layout.addRow(QLabel("Coordonnée X : "), le2)
+
         le3 = QLineEdit("")
-        le3.setValidator(QIntValidator())
+        le3.setValidator(QRegularExpressionValidator("[0-9]\\d{0,2}"))
         layout.addRow(QLabel("Coordonnée Y : "), le3)
+
         self._boutons_popup_noeud = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        layout.addRow(self._boutons_popup_noeud) #https://stackoverflow.com/questions/3016974/how-to-get-text-in-qlineedit-when-qpushbutton-is-pressed-in-a-string
-        self._popup_noeud.show()
-        self._boutons_popup_noeud.accepted.connect(self.accept_noeud)
+        layout.addRow(self._boutons_popup_noeud) # https://stackoverflow.com/questions/3016974/how-to-get-text-in-qlineedit-when-qpushbutton-is-pressed-in-a-string
+        self._popup_noeud.show()              
+
+        # Force l'utilisateur à entrer des valeurs valides dans chaque champ de saisi pour débloquer le bouton OK
+        self._boutons_popup_noeud.button(QDialogButtonBox.Ok).setEnabled(False)
+        le1.textChanged.connect(lambda: self._boutons_popup_noeud.button(QDialogButtonBox.Ok).setEnabled(le1.hasAcceptableInput() and le2.hasAcceptableInput() and le3.hasAcceptableInput()))
+        le2.textChanged.connect(lambda: self._boutons_popup_noeud.button(QDialogButtonBox.Ok).setEnabled(le1.hasAcceptableInput() and le2.hasAcceptableInput() and le3.hasAcceptableInput()))
+        le3.textChanged.connect(lambda: self._boutons_popup_noeud.button(QDialogButtonBox.Ok).setEnabled(le1.hasAcceptableInput() and le2.hasAcceptableInput() and le3.hasAcceptableInput()))
+
+        # Connecte les boutons OK et Annuler à la fonction accept_noeud et reject respectivement
+        self._boutons_popup_noeud.accepted.connect(lambda: self.accept_noeud(le1.text(), le2.text(), le3.text()))
         self._boutons_popup_noeud.rejected.connect(self._popup_noeud.reject)        
 
-    @Slot()
-    def accept_noeud(self):
+    @Slot(str, float, float)
+    def accept_noeud(self, nom: str, nx: float, ny: float):
+#TODO circuit.add_noeud(nom, nx, ny)       
         self._popup_noeud.accept()
-        self.statusBar().showMessage("Noeud ajouté", 2000)
+        self.statusBar().showMessage(f"Noeud '{nom}' ajouté en ({nx} ; {ny})", 4000)
         pass
-
-# Divers
-#TODO Ajouter les boutons pour chaque composant
-#TODO Un pop up par composant (QPopUpWidget à chercher si existant)
 
 if __name__ == '__main__':
     
