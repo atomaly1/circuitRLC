@@ -1,8 +1,8 @@
 import sys, webbrowser
 
 from PySide6.QtCore import QSize, Qt, Slot, QTextStream, QFile 
-from PySide6.QtGui import QIcon, QAction, QKeySequence
-from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QInputDialog, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit, QDialogButtonBox
+from PySide6.QtGui import QIcon, QAction, QKeySequence, QIntValidator
+from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit
 
 #TODO Ajouter au GSheet
 # Fenêtre principale (selon le "Dock Widget Example" : https://doc.qt.io/qtforpython/examples/example_widgets_mainwindows_dockwidgets.html?highlight=dock%20widget#dock-widget-example)
@@ -84,18 +84,31 @@ class MainWindow(QMainWindow):
     # Boutons
     def creer_boutons(self):
         
+        # Bouton nouveau
         self._bouton_nouveau = QPushButton('Nouveau')
         self._bouton_nouveau.clicked.connect(self.nouveau)
+
+        # Bouton ouvrir
         self._bouton_ouvrir = QPushButton('Ouvrir')
         self._bouton_ouvrir.clicked.connect(self.ouvrir)
+
+        # Bouton sauvegarder
         self._bouton_sauvegarder = QPushButton('Sauvegarder')
         self._bouton_sauvegarder.clicked.connect(self.sauvegarder)
+
+        # Bouton quitter
         self._bouton_annuler = QPushButton('Annuler')
         self._bouton_annuler.clicked.connect(self.annuler)
+
+        # Bouton refaire
         self._bouton_resoudre = QPushButton('Résoudre')
         self._bouton_resoudre.clicked.connect(self.resoudre)
+
+        # Bouton composant
         self._bouton_composant = QPushButton('Ajouter\ncomposant')
-        self._bouton_composant.clicked.connect(self.ajouter_composant)        
+        self._bouton_composant.clicked.connect(self.ajouter_composant)
+
+        # Bouton noeud
         self._bouton_noeud = QPushButton('Ajouter\nnoeud')
         self._bouton_noeud.clicked.connect(self.ajouter_noeud)
 
@@ -263,16 +276,32 @@ class MainWindow(QMainWindow):
     @Slot()
     def ajouter_noeud(self):
 #TODO Pop-up ajouter noeud
-        self.popup_noeud = QInputDialog(self)
-        self.popup_noeud.setWindowTitle("Ajouter un noeud")
-        self.popup_noeud.resize(300, 200)
-        layout = QFormLayout(self.popup_noeud)
-        layout.addRow(QLabel("Nom : "), QLineEdit(""))
-        layout.addRow(QLabel("Coordonnée X : "), QLineEdit(""))
-        layout.addRow(QLabel("Coordonnée Y : "), QLineEdit(""))
-        #layout.addRow(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        self.popup_noeud.show()
-        
+     
+        # Design
+        self._popup_noeud = QDialog(self)
+        self._popup_noeud.setWindowTitle("Ajouter un noeud")
+        self._popup_noeud.setFixedSize(178,130)
+
+        # Layout
+        layout = QFormLayout(self._popup_noeud)
+        le1 = QLineEdit("")
+        #le1.setValidator(QTextValidator())
+        layout.addRow(QLabel("Nom : "), le1)
+        le2 = QLineEdit("")
+        le2.setValidator(QIntValidator())
+        layout.addRow(QLabel("Coordonnée X : "), le2)
+        le3 = QLineEdit("")
+        le3.setValidator(QIntValidator())
+        layout.addRow(QLabel("Coordonnée Y : "), le3)
+        self._boutons_popup_noeud = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        layout.addRow(self._boutons_popup_noeud) #https://stackoverflow.com/questions/3016974/how-to-get-text-in-qlineedit-when-qpushbutton-is-pressed-in-a-string
+        self._popup_noeud.show()
+        self._boutons_popup_noeud.accepted.connect(self.accept_noeud)
+        self._boutons_popup_noeud.rejected.connect(self._popup_noeud.reject)        
+
+    @Slot()
+    def accept_noeud(self):
+        self._popup_noeud.accept()
         self.statusBar().showMessage("Noeud ajouté", 2000)
         pass
 
