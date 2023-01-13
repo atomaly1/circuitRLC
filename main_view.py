@@ -1,186 +1,319 @@
 import sys, webbrowser
 
-from PySide6.QtCore import QSize, Qt, Slot
-from PySide6.QtGui import QIcon, QAction
-from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar, QWidget, QDockWidget, QListWidget, QGridLayout, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QTextEdit 
+from PySide6.QtCore import QSize, Qt, Slot, QTextStream, QFile 
+from PySide6.QtGui import QIcon, QAction, QKeySequence, QIntValidator
+from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit
 
 #TODO Ajouter au GSheet
-# Fenêtre principale
+# Fenêtre principale (selon le "Dock Widget Example" : https://doc.qt.io/qtforpython/examples/example_widgets_mainwindows_dockwidgets.html?highlight=dock%20widget#dock-widget-example)
 class MainWindow(QMainWindow): 
    
     def __init__(self):
         super().__init__() # Appel du constructeur parent
+
+        # Central Widget
+#TODO Importer le fichier interface_graphique.py
+        #interface_graphique = InterfaceGraphique()
+        self._text_edit = QTextEdit()
+        self.setCentralWidget(self._text_edit)
 
         # Design
         self.setWindowTitle('CircuitRLC')                       # Titre
         self.setWindowIcon(QIcon('icons/rlc_project_v2.ico'))   # Icône
         self.resize(800, 600)                                   # Taille de la fenêtre
         self.setMinimumSize(400, 300)                           # Taille min
-        self.setMaximumSize(800, 600)                           # Taille MAX
-        self.setStyleSheet('background:rgba(255,255,255,127)')  # Couleur du fond (white, black, cyan, red, magenta, green, yellow, blue, gray, lightGray, darkGray... OU Color Picker Online OU rgba(63,195,255,127))
+        #self.setMaximumSize(800, 600)                          # Taille MAX
+        #self.setStyleSheet('background:rgba(255,255,255,127)')  # Couleur du fond (white, black, cyan, red, magenta, green, yellow, blue, gray, lightGray, darkGray... OU Color Picker Online OU rgba(63,195,255,127))
+        
+        # Initialisation des éléments de la fenêtre principale
+        self.creer_actions()
+        self.creer_boutons()
+        self.creer_menus()
+        self.creer_barre_outils()
+        self.creer_barre_etat()
+        self.creer_fenetres_detachables()
 
-        self.create_dock_windows()
+    # Actions
+    def creer_actions(self):    
         
         # Action nouveau
-        action_nouveau = QAction('Nouveau', self)
-        action_nouveau.setShortcut('Ctrl+N')
+        self._action_nouveau = QAction('Nouveau', self,
+        shortcut=QKeySequence.New, 
+        statusTip="Créer un nouveau circuit", triggered=self.nouveau)
+        
         # Action ouvrir
-        action_ouvrir = QAction('Ouvrir', self)
-        action_ouvrir.setShortcut('Ctrl+O')
+        self._action_ouvrir = QAction('Ouvrir', self,
+        shortcut=QKeySequence.Open,
+        statusTip="Ouvrir un circuit", triggered=self.ouvrir)
+        
         # Action sauvegarder
-        action_sauvegarder = QAction('Sauvegarder', self)
-        action_sauvegarder.setShortcut('Ctrl+S')
+        self._action_sauvegarder = QAction('Sauvegarder', self,
+        shortcut=QKeySequence.Save,
+        statusTip="Sauvegarder le circuit", triggered=self.sauvegarder)
+
         # Action quitter
-        action_quitter = QAction('Quitter', self) # Création d'une action (QAction)
-        action_quitter.setShortcut('Ctrl+Q') # Ajout d'un raccourci pour réaliser une action
-        action_quitter.triggered.connect(self.quitter_app) # Déclenchement de la méthode fermant l'application
+        self._action_quitter = QAction('Quitter', self,
+        shortcut=QKeySequence('Ctrl+Q'),
+        statusTip="Quitter l'application", triggered=self.close)
+        
         # Action annuler
-        action_annuler = QAction('Annuler', self)
-        action_annuler.setShortcut('Ctrl+Z')
+        self._action_annuler = QAction('Annuler', self,
+        shortcut=QKeySequence.Undo,
+        statusTip="Annuler la dernière action", triggered=self.annuler)
+
         # Action refaire
-        action_refaire = QAction('Refaire', self)
-        action_refaire.setShortcut('Ctrl+Y')
+        self._action_refaire = QAction('Refaire', self,
+        shortcut=QKeySequence.Redo,
+        statusTip="Refaire la dernière action", triggered=self.refaire)
+        
         # Action resoudre
-        action_resoudre = QAction('Résoudre', self)
-        action_resoudre.setShortcut('Ctrl+R')
-        action_resoudre.triggered.connect(self.resoudre)
+        self._action_resoudre = QAction('Résoudre', self,
+        shortcut=QKeySequence('Ctrl+R'),
+        statusTip="Résoudre le circuit", triggered=self.resoudre)
+
         # Action aide
-        action_aide = QAction('Aide', self)
-        action_aide.setShortcut('F1')
-        action_aide.triggered.connect(self.aide)
+        self._action_aide = QAction('Aide', self,
+        shortcut=QKeySequence.HelpContents,
+        statusTip="Afficher l'aide", triggered=self.aide)
+        
         # Action Github
-        action_github = QAction('Github CircuitRLC', self)
-        action_github.setShortcut('F2')
-        action_github.triggered.connect(self.github)
-       
-        # Menu Bar
-        barre_menu = self.menuBar() # Création de la barre de menu (QmenuBar)   
+        self._action_github = QAction('GitHub CircuitRLC', self,
+        shortcut=QKeySequence('Ctrl+G'),
+        statusTip="Afficher le GitHub du projet CircuitRLC", triggered=self.github)
+
+    # Boutons
+    def creer_boutons(self):
         
-        menu_fichier = barre_menu.addMenu('Fichier') # Ajout d'un menu déroulant (QMenu)
-        menu_fichier.addAction(action_nouveau) # Ajout d'une action au menu
-        menu_fichier.addAction(action_ouvrir)
-        menu_fichier.addSeparator()
-        menu_fichier.addAction(action_sauvegarder)
-        menu_fichier.addSeparator()
-        menu_fichier.addAction(action_quitter)
+        # Bouton nouveau
+        self._bouton_nouveau = QPushButton('Nouveau')
+        self._bouton_nouveau.clicked.connect(self.nouveau)
 
-        menu_edition = barre_menu.addMenu('Edition')
-        menu_edition.addAction(action_annuler)
-        menu_edition.addAction(action_refaire)
+        # Bouton ouvrir
+        self._bouton_ouvrir = QPushButton('Ouvrir')
+        self._bouton_ouvrir.clicked.connect(self.ouvrir)
 
-        menu_calculs = barre_menu.addMenu('Calculs')
-        menu_calculs.addAction(action_resoudre)
+        # Bouton sauvegarder
+        self._bouton_sauvegarder = QPushButton('Sauvegarder')
+        self._bouton_sauvegarder.clicked.connect(self.sauvegarder)
 
-        menu_aide = barre_menu.addMenu('Aide')
-        menu_aide.addAction(action_aide)
-        menu_aide.addSeparator()
-        menu_aide.addAction(action_github)
+        # Bouton quitter
+        self._bouton_annuler = QPushButton('Annuler')
+        self._bouton_annuler.clicked.connect(self.annuler)
 
-        # Tool Bar
-        toolbar = QToolBar('Toolbar')
-        toolbar.setIconSize(QSize(16,16))
-        self.addToolBar(Qt.TopToolBarArea, toolbar)
-        toolbar.addWidget(QPushButton('Nouveau'))
-        toolbar.addWidget(QPushButton('Ouvrir'))
-        toolbar.addWidget(QPushButton('Sauvegarder'))
-        toolbar.addWidget(QPushButton('Annuler'))
-        toolbar.addWidget(QPushButton('Résoudre'))
-        toolbar.addWidget(QPushButton('Ajouter\ncomposant')) 
-        toolbar.addWidget(QPushButton('Ajouter\nnoeud'))
+        # Bouton refaire
+        self._bouton_resoudre = QPushButton('Résoudre')
+        self._bouton_resoudre.clicked.connect(self.resoudre)
 
-        # Central Widget
-        main_view = InterfaceGraphique()
-        self.setCentralWidget(main_view)
+        # Bouton composant
+        self._bouton_composant = QPushButton('Ajouter\ncomposant')
+        self._bouton_composant.clicked.connect(self.ajouter_composant)
 
-        # Status Bar
-        status_bar = self.statusBar()
-        status_bar.showMessage("Application développée par Eliott, Lucie et Emeric - FIP MIK4", 10000)
+        # Bouton noeud
+        self._bouton_noeud = QPushButton('Ajouter\nnoeud')
+        self._bouton_noeud.clicked.connect(self.ajouter_noeud)
 
-#TODO Liste composant
-    def create_dock_windows(self):
+    # Barre de menus
+    def creer_menus(self):
+        
+        self._menu_fichier = self.menuBar().addMenu('Fichier')  # Ajout d'un menu déroulant (QMenu)
+        self._menu_fichier.addAction(self._action_nouveau)      # Ajout d'une action au menu
+        self._menu_fichier.addAction(self._action_ouvrir)
+        self._menu_fichier.addSeparator()
+        self._menu_fichier.addAction(self._action_sauvegarder)
+        self._menu_fichier.addSeparator()
+        self._menu_fichier.addAction(self._action_quitter)
+
+        self._menu_edition = self.menuBar().addMenu('Edition')
+        self._menu_edition.addAction(self._action_annuler)
+        self._menu_edition.addAction(self._action_refaire)
+
+        self._menu_affichage = self.menuBar().addMenu('Affichage')
+
+        self.menuBar().addSeparator()
+
+        self._menu_calculs = self.menuBar().addMenu('Calculs')
+        self._menu_calculs.addAction(self._action_resoudre)
+
+        self._menu_aide = self.menuBar().addMenu('Aide')
+        self._menu_aide.addAction(self._action_aide)
+        self._menu_aide.addSeparator()
+        self._menu_aide.addAction(self._action_github)
+
+    # Barre d'outils
+    def creer_barre_outils(self):
+
+        self._barre_outils = QToolBar('Toolbar')
+        self._barre_outils.setIconSize(QSize(16,16))
+        self.addToolBar(Qt.TopToolBarArea, self._barre_outils)
+        self._barre_outils.addWidget(self._bouton_nouveau)
+        self._barre_outils.addWidget(self._bouton_ouvrir)
+        self._barre_outils.addWidget(self._bouton_sauvegarder)
+        self._barre_outils.addWidget(self._bouton_annuler)
+        self._barre_outils.addWidget(self._bouton_resoudre)
+        self._barre_outils.addWidget(self._bouton_composant)
+        self._barre_outils.addWidget(self._bouton_noeud)
+
+    # Barre de status
+    def creer_barre_etat(self):
+        self.statusBar().showMessage("Application développée par Eliott, Lucie et Emeric - FIP MIK4", 10000)
+#TODO Réticule (dans cette box ?)
+
+    # Fenêtres détachables
+    def creer_fenetres_detachables(self):
+
+        # Liste composants 
+        # Layout
         dock = QDockWidget("Liste des composants", self)
-#TODO Resize horizontal
-        dock.setAllowedAreas(Qt.LeftDockWidgetArea)
-        self.liste_composants = QWidget(dock)
-        
-        #Demo
-        #self._customer_list.addAction(QPushButton("Résistance : R1", self))
-        #self._customer_list.addItems(QPushButton("Générateur Tension : G", self))
-
-        dock.setWidget(self.liste_composants)
+        dock.setMinimumSize(QSize(180,100))
+        dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self._liste_composants = QWidget(dock)
+        dock.setWidget(self._liste_composants)
         self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+        self._menu_affichage.addAction(dock.toggleViewAction())
 
+#TODO Ajout dynamique de boutons cliquables
+
+        # Informations du composant selectionné
+        # Layout
         dock = QDockWidget("Info composants", self)
-#TODO Resize horizontal
-        dock.setAllowedAreas(Qt.LeftDockWidgetArea)
-        self.info_composants = QWidget(dock)
-        
-        #Demo
-        #self._customer_list.addAction(QPushButton("Résistance : R1", self))
-        #self._customer_list.addItems(QPushButton("Générateur Tension : G", self))
-
-        dock.setWidget(self.info_composants)
+        dock.setMinimumSize(QSize(180,100))
+        dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self._info_composants = QWidget(dock)
+        dock.setWidget(self._info_composants)
         self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+        self._menu_affichage.addAction(dock.toggleViewAction())
 
+#TODO Afficher les informations du composant selectionné
 
-    # Slots privés
+        # Informations du composant selectionné
+        # Layout
+        dock = QDockWidget("Résultats", self)
+        dock.setMinimumSize(QSize(180,100))
+        dock.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self._liste_composants = QWidget(dock)
+        dock.setWidget(self._liste_composants)
+        self.addDockWidget(Qt.BottomDockWidgetArea, dock)
+        self._menu_affichage.addAction(dock.toggleViewAction())
+
+#TODO Afficher les informations du composant selectionné
+
+    @Slot()
+    def nouveau(self):
+#TODO Nouveau circuit
+        self.statusBar().showMessage("Nouveau circuit créé", 2000)
+        pass
+
+    @Slot()
+    def ouvrir(self):
+#TODO Ouvrir circuit
+        self.statusBar().showMessage("Circuit ouvert", 2000)
+        pass
+
+    # Test sauvegarde
+    @Slot()
+    def sauvegarder(self):
+        dialog = QFileDialog(self, "Enregistrer sous")
+        dialog.setMimeTypeFilters(['text/plain'])
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setDefaultSuffix('txt')
+        if dialog.exec() != QDialog.Accepted:
+            return
+
+        filename = dialog.selectedFiles()[0]
+        file = QFile(filename)
+        if not file.open(QFile.WriteOnly | QFile.Text):
+            reason = file.errorString()
+            QMessageBox.warning(self, "Dock Widgets",
+                    f"Cannot write file {filename}:\n{reason}.")
+            return
+
+        out = QTextStream(file)
+        with QApplication.setOverrideCursor(Qt.WaitCursor):
+            out << self._text_edit.toPlainText()
+
+        self.statusBar().showMessage(f"{filename} enregistré", 2000)
+
     @Slot()
     def quitter_app(self):
         QApplication.quit()
+    
     @Slot()
-    def aide(self):
-        webbrowser.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley")
+    def annuler(self):
+#TODO Annuler
+        self.statusBar().showMessage("Dernière action annulée", 2000)
+        pass
+
     @Slot()
-    def github(self):
-        webbrowser.open("https://github.com/lucie-wabartha/circuitRLC")
+    def refaire(self):
+#TODO Refaire
+        self.statusBar().showMessage("Action rétablie", 2000)
+        pass
+
     @Slot()
     def resoudre(self):
 #TODO Pop-up resoudre 
+        QMessageBox.about(self, "Résoudre", "Work \nIn \nProgress")
+        self.statusBar().showMessage("Résolution du circuit", 2000)
         pass
 
-# Vue principale
-class InterfaceGraphique(QWidget):
+    @Slot()
+    def aide(self):
+        webbrowser.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab")
+        self.statusBar().showMessage("Ouverture de l'aide", 2000)
+    
+    @Slot()
+    def github(self):
+        webbrowser.open("https://github.com/lucie-wabartha/circuitRLC")
+        self.statusBar().showMessage("Ouverture de GitHub : circuitRLC", 2000)
 
-    def __init__(self):
-        super().__init__()
-        
-        #TODO Design de chaque composant
-        #TODO Placement automatique à partir des noeuds
+    @Slot()
+    def ajouter_composant(self):
+#TODO Pop-up ajouter composant
+        QMessageBox.about(self, "Ajouter composant", "Work \nIn \nProgress")
+        self.statusBar().showMessage("Composant ajouté", 2000)
+        pass
 
-        '''
-        # TEST A SUPPRIMER
-        grid = QGridLayout()
-        self.setLayout(grid)
-        grid.addWidget(QPushButton("Sauvegarder/nouveau etc"), 0, 0, 1, 2)  #Remplacer par un layout
-        grid.addWidget(QPushButton("Ajouter élements"), 1, 0, 1, 1)         #Remplacer par un layout
-        grid.addWidget(QLabel("Coordonnées"), 2, 0, 1, 1)                   #Remplacer par un layout
-        grid.addWidget(QLabel("Interface graphique"), 1, 1, 2, 1)           #Remplacer par un layout
-        grid.addWidget(QLabel("Logs/Results"), 3, 0, 1, 1)                  #Remplacer par un layout
-        grid.addWidget(QTextEdit("Laisse libre cours à ton imagination..."), 3, 1, 1, 1)
-        '''   
+    @Slot()
+    def ajouter_noeud(self):
+#TODO Pop-up ajouter noeud
+     
+        # Design
+        self._popup_noeud = QDialog(self)
+        self._popup_noeud.setWindowTitle("Ajouter un noeud")
+        self._popup_noeud.setFixedSize(178,130)
 
-#TODO Fenêtre de logs
-class Résultats(QDockWidget):
-    pass
+        # Layout
+        layout = QFormLayout(self._popup_noeud)
+        le1 = QLineEdit("")
+        #le1.setValidator(QTextValidator())
+        layout.addRow(QLabel("Nom : "), le1)
+        le2 = QLineEdit("")
+        le2.setValidator(QIntValidator())
+        layout.addRow(QLabel("Coordonnée X : "), le2)
+        le3 = QLineEdit("")
+        le3.setValidator(QIntValidator())
+        layout.addRow(QLabel("Coordonnée Y : "), le3)
+        self._boutons_popup_noeud = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        layout.addRow(self._boutons_popup_noeud) #https://stackoverflow.com/questions/3016974/how-to-get-text-in-qlineedit-when-qpushbutton-is-pressed-in-a-string
+        self._popup_noeud.show()
+        self._boutons_popup_noeud.accepted.connect(self.accept_noeud)
+        self._boutons_popup_noeud.rejected.connect(self._popup_noeud.reject)        
 
-#TODO Information pour chaque composant
-class InfoComposant(QDockWidget):
-    pass
+    @Slot()
+    def accept_noeud(self):
+        self._popup_noeud.accept()
+        self.statusBar().showMessage("Noeud ajouté", 2000)
+        pass
 
 # Divers
 #TODO Ajouter les boutons pour chaque composant
 #TODO Un pop up par composant (QPopUpWidget à chercher si existant)
-#TODO A droite, affichage du circuit : Affichage (Fenêtre graphique ?)
-#TODO Fenêtre Calculs
-#TODO Réticule (dans cette box ?)
 
 if __name__ == '__main__':
-    # On crée l'instance d'application en lui passant le tableau des arguments.
-    app = QApplication(sys.argv)
+    
+    app = QApplication(sys.argv)    # Création de l'instance d'application en lui passant le tableau des arguments
 
-    # TODO : Instancier et afficher votre fenêtre graphique.
-    main_window = MainWindow()
-    main_window.show()
+    main_window = MainWindow()      # Instanciation de la fenêtre principale
+    main_window.show()              # Afficher la fenêtre principale
 
-    # On démarre la boucle de gestion des événements.
-    sys.exit(app.exec())
+    sys.exit(app.exec())            # Démarrage de la boucle de gestion des événements
