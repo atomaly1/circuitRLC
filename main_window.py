@@ -11,7 +11,7 @@ from PySide6.QtGui import QIcon, QAction, QKeySequence, QRegularExpressionValida
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit
 
 from circuit import Circuit
-from interface_graphique import InterfaceGraphique
+from interface_graphique import *
 
 #from interface_graphique import InterfaceGraphique
 
@@ -163,9 +163,10 @@ class MainWindow(QMainWindow):
         self._barre_outils.addWidget(self._bouton_noeud)
 
     # Barre de status
-    def creer_barre_etat(self):
+    def creer_barre_etat(self):      
         self.statusBar().showMessage("Application développée par Eliott, Lucie et Emeric - FIP MIK4", 10000)
-#TODO Réticule (dans cette box ?)
+        status_bar_droite1 = QLabel("En fonctionnement")
+        self.statusBar().addPermanentWidget(status_bar_droite1,0)
 
     # Fenêtres détachables
     def creer_fenetres_detachables(self):
