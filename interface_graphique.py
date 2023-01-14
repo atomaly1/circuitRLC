@@ -17,10 +17,9 @@ class InterfaceGraphique(QWidget):
         if event.button() == Qt.LeftButton:
             self.points.append(event.pos())
     def enterEvent(self, event):
-        self.parent().statusBar().showMessage("Mouse Entered Widget")
         self.setCursor(Qt.CrossCursor)
     def leaveEvent(self, event):
-        self.parent().statusBar().clearMessage()
+        pass
     def mouseMoveEvent(self, event):
         self.update_points()
         pos = event.pos()
