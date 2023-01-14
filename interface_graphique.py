@@ -10,9 +10,6 @@ from PySide6.QtWidgets import QWidget, QLabel, QApplication, QFrame
 class InterfaceGraphique(QFrame):
     DEFAULT_BORDURE = True
 
-    def __init__(self):
-        super().__init__()
-
     # DEFAULT_BORDURE peut être utilisé dans __init__
     def __init__(self,bordure : bool = DEFAULT_BORDURE):
         super().__init__()
