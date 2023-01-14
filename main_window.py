@@ -13,7 +13,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, Q
 from noeud import Noeud
 from composant import Composant
 from circuit import Circuit
-from interface_graphique import InterfaceGraphique
+from interface_graphique import *
 
 #from interface_graphique import InterfaceGraphique
 
@@ -183,9 +183,11 @@ class MainWindow(QMainWindow):
         self._barre_outils.addWidget(self._bouton_noeud)
 
     # Barre de status
-    def creer_barre_etat(self):
+    def creer_barre_etat(self):      
         self.statusBar().showMessage("Application développée par Eliott, Lucie et Emeric - FIP MIK4", 10000)
         # Réticule dans le fichier 'interface_graphique.py'
+        status_bar_droite1 = QLabel("En fonctionnement")
+        self.statusBar().addPermanentWidget(status_bar_droite1,0)
 
 #TODO Terminer les fenêtres détachables "Liste composants" et "Info composant"
     # Fenêtres détachables
