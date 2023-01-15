@@ -1,8 +1,8 @@
+import cmath
 import numpy as np
 from circuit import Circuit
+from noeud import Noeud
 from composant import Composant
-
-
 
 """
 n nb de noeuds
@@ -32,15 +32,62 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         buffer += f"{self._mat_b}"
         return buffer
 
+    def solve_str(self, sol : list[complex]) -> str :
+        buffer = "solution : \n"
+    
+        for elmt in sol :
+            buffer += "["
+            buffer += f"{round(cmath.polar(elmt)[0], 2)}"
+            buffer += ","
+            buffer += f"{round(cmath.polar(elmt)[1], 2)}"
+            buffer += "] \n"
+        return buffer
+
+
     def solve(self) -> list[complex] : 
         return np.around(np.linalg.solve(self._mat_a, self._mat_b),2)
 
-    def _count_dipoles(circuit : Circuit) -> int :
-        counter = 0
-        for composant in circuit.composants:
-            if str(type(composant)) != "<class 'fil.Fil'>":
-                counter += 1
-        return counter
+    def _liste_composants_ayant_noeud_départ(noeud_depart : Noeud, composants : list[Composant]) -> list[Composant]:
+        liste_composants = []            
+        for composant in composants :
+            if composant.noeud_depart == noeud_depart :
+                liste_composants.append(composant)
+        return liste_composants
+
+    def _creer_maille(noeud_base : Noeud, composant : Composant, circuit : Circuit) -> list[Composant] :
+        maille = []
+        maille.append(composant)
+        noeud_courant = composant.noeud_arrivee
+        while noeud_courant != noeud_base :
+            for comp in circuit.composants :
+                if comp.noeud_depart == noeud_courant :
+                    maille.append(comp)
+                    noeud_courant = comp.noeud_arrivee
+                    break
+        return maille
+    
+    def _est_une_permutation(maille_a_tester : list[Composant], liste_mailles : list[list[Composant]]) -> bool :
+        for maille in liste_mailles :
+            if len(maille_a_tester) != len(maille) :
+                continue 
+            match = True
+            for composant in maille_a_tester :
+                if composant not in maille :
+                    match = False
+                    break
+            if match :
+                return True 
+        return False
+
+    def _ajouter_maille_dans_matrice(matrice : list[list[complex]], maille : list[Composant], circuit : Circuit, ligne : int) -> list[list[complex]]:
+        for composant in maille :
+                for i in range(len(circuit.composants)) :
+                    if composant == circuit.composants[i] :
+                        if str(type(composant))  == "<class 'generateur_tension.GenerateurTension'>" :
+                            matrice[ligne, 2*i] = 1
+                        else : 
+                            matrice[ligne, 2*i] = -1
+        return matrice
 
     @classmethod
     def create_sys_lin(cls, circuit : Circuit, omega : float) -> 'SysLineaire':
@@ -56,12 +103,6 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         mat_a = np.zeros((nb_inconnus,nb_inconnus), dtype=complex)
         mat_b = np.zeros(nb_inconnus, dtype=complex)
 
-        '''
-        for row_index, row in enumerate(mat_a):
-            for col_index, item in enumerate(row):
-                print(mat_a[row_index][col_index])
-        '''
-
         # Equations d'impédances (sans Fils)
         for i in range(nb_composants):
             mat_a[i, 2*i] = circuit.composants[i].coeff_u()
@@ -73,68 +114,42 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         nb_noeuds = len(circuit.noeuds)
 
         for i in range(nb_noeuds - 1) :
-            for j in range(nb_composants - 1) :
+            for j in range(nb_composants) :
                 if circuit.noeuds[i] == circuit.composants[j].noeud_depart:
                     mat_a[index_ligne, 2*j+1] = 1
                 elif circuit.noeuds[i] == circuit.composants[j].noeud_arrivee:
                     mat_a[index_ligne, 2*j+1] = -1
             index_ligne += 1
 
-        # Loi des mailles simplifiée
+        # Loi des mailles simplifiée (sans fils)
 
-        # Déclaration des variables
-        temp_composants = circuit.composants.copy()
         maille = []
         liste_mailles = []
-        noeud_base = circuit.noeuds[2]
-        noeud_courant = noeud_base
 
-        # Déclaration des fonctions
-        def liste_composants_ayant_noeud_départ(snoeud_depart, scircuit) -> list:
-            liste_composants =[]            
-            for composant in scircuit.composants :
-                if composant.noeud_depart == snoeud_depart :
-                    liste_composants.append(composant)
-            return liste_composants
+        while index_ligne < nb_inconnus-1 : # Tant que la matrice n'est pas remplie
 
+            for noeud in circuit.noeuds : # Pour chaque noeud du circuit
 
-        def ajouter_composant_dans_maille(snoeud_courant) : # Ajoute un composant dans la maille et retourne le nouveau noeud courant
-            for composant in temp_composants :
-                if snoeud_courant == composant.noeud_depart :
-                    maille.append(composant)
-                    temp_composants.remove(composant)
-                    snoeud_courant = composant.noeud_arrivee
-                    return snoeud_courant
+                # On extrait la liste des composants ayant pour noeud de départ le noeud actuel
+                liste_composants_depart = cls._liste_composants_ayant_noeud_départ(noeud,circuit.composants)
 
-        def ajouter_maille_dans_circuit(smaille) :
-            for composant in smaille :
-                for i in range(nb_composants - 1) :
-                    if composant == circuit.composants[i] :
-                        if str(type(composant))  == "<class 'generateur_tension.GenerateurTension'>" :
-                            mat_a[index_ligne, 2*i] = 1
-                        else : 
-                            mat_a[index_ligne, 2*i] = -1
+                for composant in liste_composants_depart : # pour chaque composant de la précédente liste
 
-        noeud_courant = ajouter_composant_dans_maille(noeud_courant)
-        while noeud_courant != noeud_base :
-            noeud_courant = ajouter_composant_dans_maille(noeud_courant) 
-        # TODO check si la maille est une permutation, si oui exploration d'une nouvelle maille
+                    # une maille problable est crée
+                    maille = cls._creer_maille(noeud, composant, circuit)
 
-        print(maille)
-        liste_mailles.append(maille)
-        # Ajoute la maille à la matrice
-        ajouter_maille_dans_circuit(maille)
-        index_ligne += 1
-                        
-                    
-             
-        '''
-        for i in range(0,nb_noeuds-1) :
-            noeud_base = circuit.noeuds[i]
-            noeud_courant = ajouter_dans_maille(noeud_courant)
-            #noeud_courant = ajouter_dans_maille(noeud_courant)
-        '''         
+                    # si la maille n'as déjà été crée on l'ajoute à la liste des mailles
+                    if not cls._est_une_permutation(maille,liste_mailles) : 
+                        #print(maille)
+                        liste_mailles.append(maille)
 
+                        # on applique la loi des mailles pour compléter une ligne de la matrice
+                        mat_a = cls._ajouter_maille_dans_matrice(mat_a, maille, circuit, index_ligne)
+                        index_ligne += 1
+
+                    # on supprime tous les composants de la maille pour recommencer
+                    maille = []
+            
         return SysLineaire(mat_a, mat_b)
 
 def sys_lin_exemple(omega : float) -> SysLineaire:
@@ -250,23 +265,15 @@ if __name__ == '__main__':
         print(round(cmath.polar(elmt)[1], 2), end='')
         print("]")
     """
-   
     
     circuit = Circuit.create_circuit_test()
     print(circuit)
     lin_sys = SysLineaire.create_sys_lin(circuit,omega)
     print(lin_sys)
-    
-    '''
+
     sol = lin_sys.solve()
 
-    print("solution : ")
+    print(lin_sys.solve_str(sol))
     
-    for elmt in sol:
-        print("[", end='')
-        print(round(cmath.polar(elmt)[0], 2),end='')
-        print(", ", end='')
-        print(round(cmath.polar(elmt)[1], 2), end='')
-        print("]")
 
-    '''
+    
