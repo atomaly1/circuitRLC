@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         # Design
         self.setWindowTitle('CircuitRLC')                       # Titre
         self.setWindowIcon(QIcon('icons/rlc_project_v2.ico'))   # Icône
-        self.resize(800, 600)                                   # Taille de la fenêtre
+        self.resize(1000, 700)                                   # Taille de la fenêtre
         self.setMinimumSize(400, 300)                           # Taille min
         #self.setMaximumSize(800, 600)                           # Taille MAX
         #self.setStyleSheet('background:rgba(255,255,255,127)')  # Couleur du fond (white, black, cyan, red, magenta, green, yellow, blue, gray, lightGray, darkGray... OU Color Picker Online OU rgba(63,195,255,127))
@@ -188,6 +188,7 @@ class MainWindow(QMainWindow):
         # Réticule dans le fichier 'interface_graphique.py'
         status_bar_droite1 = QLabel("En fonctionnement")
         self.statusBar().addPermanentWidget(status_bar_droite1,0)
+        status_bar_droite1
 
 #TODO Terminer les fenêtres détachables "Liste composants" et "Info composant"
     # Fenêtres détachables
