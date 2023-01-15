@@ -470,7 +470,7 @@ class MainWindow(QMainWindow):
         le1 = QLineEdit("")
         le1.setValidator(QRegularExpressionValidator("\\N{0,14}")) # https://www.ics.com/blog/qt-support-input-masks-and-validators
         layout.addRow(QLabel("Nom : "), le1)
-        le1.setPlaceholderText("R1")
+        le1.setPlaceholderText("n1")
 
         le2 = QLineEdit("")
         le2.setValidator(QRegularExpressionValidator("[0-9]\\d{0,2}"))
