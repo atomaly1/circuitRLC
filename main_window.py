@@ -6,6 +6,7 @@ Created on 25 juin 2022
 
 import sys, webbrowser
 
+# from screeninfo import get_monitors               # Used for window size extraction. https://stackoverflow.com/questions/3129322/how-do-i-get-monitor-resolution-in-python
 from PySide6.QtCore import QSize, Qt, Slot, QTextStream, QFile 
 from PySide6.QtGui import QIcon, QAction, QKeySequence, QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit, QVBoxLayout, QComboBox
@@ -13,7 +14,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, Q
 from noeud import Noeud
 from composant import Composant
 from circuit import Circuit
-from interface_graphique import *
+from interface_graphique import InterfaceGraphique
 
 #from interface_graphique import InterfaceGraphique
 
@@ -28,12 +29,21 @@ class MainWindow(QMainWindow):
         interface_graphique = InterfaceGraphique()
         self.setCentralWidget(interface_graphique)
 
+        #interface_graphique().create_ui().create_noeud(100, 100, "R1")
+
         # Design
+        #for m in get_monitors():
+        #    print(str(m))                      # returns info on screen resolution, to be used to define window size. see libraries  import lines
+                                                # use regex
+
+        self.max_size_x = 1627
+        self.max_size_y = 1145
+
         self.setWindowTitle('CircuitRLC')                       # Titre
         self.setWindowIcon(QIcon('icons/rlc_project_v2.ico'))   # Icône
-        self.resize(1000, 700)                                   # Taille de la fenêtre
+        self.resize(self.max_size_x, self.max_size_y)                                   # Taille de la fenêtre
         self.setMinimumSize(400, 300)                           # Taille min
-        #self.setMaximumSize(800, 600)                           # Taille MAX
+        #self.setMaximumSize(1920, 1080)                           # Taille MAX
         #self.setStyleSheet('background:rgba(255,255,255,127)')  # Couleur du fond (white, black, cyan, red, magenta, green, yellow, blue, gray, lightGray, darkGray... OU Color Picker Online OU rgba(63,195,255,127))
         
         # Initialisation des éléments de la fenêtre principale

@@ -1,7 +1,7 @@
 import sys
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QAction, QBrush, QPen, QFont
+from PySide6.QtCore import Qt, QPointF
+from PySide6.QtGui import QAction, QBrush, QPen, QFont, QColor
 from PySide6.QtWidgets import QWidget, QLabel, QApplication, QFrame, QGraphicsScene, QGraphicsView, QGraphicsItem
 
 
@@ -18,7 +18,7 @@ class FrameWithBorder(QFrame):
         super().__init__()
         if bordure :
             self.setFrameStyle(QFrame.Panel | QFrame.Plain)
-            self.setLineWidth(5)
+            self.setLineWidth(0)
 
             
 
@@ -38,9 +38,9 @@ class InterfaceGraphique(FrameWithBorder):
         self.points.append(event.pos())
         pos = event.pos()
         self.parent().statusBar().showMessage("x: {}, y: {}".format(pos.x(), pos.y()))
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.points.append(event.pos())
+    #def mousePressEvent(self, event):
+        #if event.button() == Qt.LeftButton:
+            #self.points.append(event.pos())
 
     def create_ui(self):
 
@@ -50,21 +50,147 @@ class InterfaceGraphique(FrameWithBorder):
         blackPen = QPen(Qt.black)
         blackPen.setWidth(2)
 
-        def create_resistance(self, px, py, name):
-            self.rect = scene.addRect(px, py, 40,20, blackPen)
-            self.rect.setFlag(QGraphicsItem.ItemIsMovable)
+        redPen = QPen(Qt.red)
+        redPen.setWidth(1)
+
+        #def create_resistance(self, px, py, name):
+        self.rect = scene.addRect(0, -100, 1,1, blackPen)
+        #self.rect.setFlag(QGraphicsItem.ItemIsMovable)
+
+        max_size_x = 2560/2                #FHD = 1920 ; QHD = 2560
+        max_size_y = 1440/2               #FHD = 1080 ; QHD = 1440
+
+        min_x = -(max_size_x)/2
+        max_x = (max_size_x)/2
+
+        min_y = -(max_size_y)/2
+        max_y = (max_size_y)/2
+
+
+        axe_x = scene.addLine(min_x, 0, max_x, 0, redPen)          #axe abscisses
+        axe_y = scene.addLine(0, min_y, 0, max_y, redPen)          #axe ordonnées
+
+        taille_indentation = 10
+
+        x = min_x
+        text_x0 = scene.addText("-x", QFont("Sanserif", 15))
+        text_x0.setPos(QPointF(x, 0))
+        while x <= max_x:
+            scene.addLine(x, -(taille_indentation/2), x, (taille_indentation/2), redPen)
+            x = x + 10
+        text_x1 = scene.addText("x", QFont("Sanserif", 15))
+        text_x1.setPos(QPointF(x, 0))
+
+        y = min_y
+        text_y0 = scene.addText("-y", QFont("Sanserif", 15))
+        text_y0.setPos(QPointF(0, y))
+        while y <= max_y:
+            scene.addLine(-(taille_indentation/2), y, (taille_indentation/2), y, redPen)
+            y = y + 10
+        
+        text_y1 = scene.addText("+y", QFont("Sanserif", 15))
+        text_y1.setPos(QPointF(0, y))
+
+        
+        #test circuit test
+
+        #noeuds #TODO : remplacer par classes et methodes
+
+        n_diameter = 20
+        n_radius = n_diameter/2
+
+            #noeud 1
+        n1_x = min_x/2
+        n1_y = -min_y/2
+        n1 = scene.addEllipse(n1_x-n_radius, n1_y-n_radius, n_diameter, n_diameter, blackPen)
+        n1_text = scene.addText("N1", QFont("Sanserif", 15))
+        n1_text.setPos(QPointF(n1_x, n1_y))
+
+            #noeud 2
+        n2_x = min_x/2
+        n2_y = min_y/2
+        n2 = scene.addEllipse(n2_x-n_radius, n2_y-n_radius, n_diameter, n_diameter, blackPen)
+        n1_text = scene.addText("N2", QFont("Sanserif", 15))
+        n1_text.setPos(QPointF(n2_x, n2_y))
+
+            #noeud 3
+        n3_x = -min_x/2
+        n3_y = min_y/2
+        n3 = scene.addEllipse(n3_x-n_radius, n3_y-n_radius, n_diameter, n_diameter, blackPen)
+        n1_text = scene.addText("N3", QFont("Sanserif", 15))
+        n1_text.setPos(QPointF(n3_x, n3_y))
+
+
+            #noeud 4
+        n4_x = -min_x/2
+        n4_y = -min_y/2
+        n4 = scene.addEllipse(n4_x-n_radius, n4_y-n_radius, n_diameter, n_diameter, blackPen)
+        n1_text = scene.addText("N4", QFont("Sanserif", 15))
+        n1_text.setPos(QPointF(n4_x, n4_y))
+
+
+        #fils  #TODO : remplacer par classes et methodes
+
+            #n1-n2
+        f1_2 = scene.addLine(n1_x, n1_y, n2_x, n2_y, blackPen)
+        f1_2.milieu_x = (n1_x+n2_x)/2
+        f1_2.milieu_y = (n1_y+n2_y)/2
+
+            #n2-n3
+        f2_3 = scene.addLine(n2_x, n2_y, n3_x, n3_y, blackPen)
+        f2_3.milieu_x = (n2_x+n3_x)/2
+        f2_3.milieu_y = (n2_y+n3_y)/2
+
+            #n3-n4
+        f3_4 = scene.addLine(n3_x, n3_y, n4_x, n4_y, blackPen)
+        f3_4.milieu_x = (n3_x+n4_x)/2
+        f3_4.milieu_y = (n3_y+n4_y)/2
+
+            #n4-n1
+        f4_1 = scene.addLine(n4_x, n4_y, n1_x, n1_y, blackPen)
+        f4_1.milieu_x = (n4_x+n1_x)/2
+        f4_1.milieu_y = (n4_y+n1_y)/2
+
+            #n1-n3
+        f1_3 = scene.addLine(n1_x, n1_y, n3_x, n3_y, blackPen)
+        f1_3.milieu_x = (n1_x+n3_x)/2
+        f1_3.milieu_y = (n1_y+n3_y)/2
+
+
+        #composants #TODO : remplacer par classes et methodes
+            
+            #générateur
+
+        generateur_radius = 25
+        generateur_diameter = generateur_radius*2
+        generateur = scene.addEllipse(f1_2.milieu_x-generateur_radius, f1_2.milieu_y-generateur_radius, generateur_diameter, generateur_diameter, blackPen)
+        generateur_text = scene.addText("G", QFont("Sanserif", 15))
+        generateur_text.setPos(QPointF(f1_2.milieu_x+generateur_radius/2, f1_2.milieu_y+generateur_radius/2))
+
+            #resistance 1
+        
+        resistance1_largeur = 20
+        resistance1_longueur = 40
+        resistance1 = scene.addRect(f2_3)
+
+            #resistance 2
+
+            #condensateur 1
+
+            #inductance 1
+        
+
 
         def create_noeud(self, px, py, name):
             self.ellipse = scene.addEllipse(px, py, 5, 5, blackPen)
             self.ellipse.setFlag(QGraphicsItem.ItemIsMovable)
-        
 
         def create_text():
             scene.addText("This is the greatest text, ever - Donald J. Trump", QFont("Sanserif", 15))
         
 
         self.view = QGraphicsView(scene, self)
-        self.view.setGeometry(0,0, 1000, 900)
+        self.view.setGeometry(0,0, max_size_x+100, max_size_y+100)
 
 
 if __name__ == '__main__':
