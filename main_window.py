@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
         # Central Widget
         interface_graphique = InterfaceGraphique()
         self.setCentralWidget(interface_graphique)
+        #self.centralWidget().create_ui()
 
         # Design
         self.setWindowTitle('CircuitRLC')                       # Titre
@@ -285,7 +286,9 @@ class MainWindow(QMainWindow):
 #TODO Ouvrir circuit de test
     @Slot()
     def ouvrir(self):
-        
+        self.setCentralWidget(InterfaceGraphique())
+        self.centralWidget().create_ui()
+        self.centralWidget().show()
         self.set_circuit_courant(Circuit.create_circuit_test())
         self._te_resultats.setText(f'{self.get_circuit_courant()}')
         self.statusBar().showMessage("Circuit de test ouvert", 2000) #"Circuit ouvert"
@@ -361,7 +364,7 @@ class MainWindow(QMainWindow):
 #TODO circuit.resoudre(f)
     @Slot(float)
     def accept_resoudre(self, f : float):
-        omega = f #TODO * 2 * pi
+        omega = f * 2 * pi
         self._te_resultats.setText(f'{circuit_courant}')
         lin_sys = SysLineaire.create_sys_lin(circuit_courant, omega)
         sol = lin_sys.solve()

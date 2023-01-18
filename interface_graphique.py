@@ -27,12 +27,13 @@ class InterfaceGraphique(FrameWithBorder):
     def __init__(self):
         super().__init__()
 
-        self.create_ui()
+        #self.draw_axis()
+        #self.create_ui()
         self.show()
-
 
     def enterEvent(self, event):
         self.setCursor(Qt.CrossCursor)
+    '''
     def mouseMoveEvent(self, event):
         self.update_points()
         self.points.append(event.pos())
@@ -41,21 +42,15 @@ class InterfaceGraphique(FrameWithBorder):
     #def mousePressEvent(self, event):
         #if event.button() == Qt.LeftButton:
             #self.points.append(event.pos())
-
-    def create_ui(self):
-
+    '''
+    
+    def draw_axis(self):
+        
         scene = QGraphicsScene(self)
- 
-        # Définition des pinceaux 
-        blackPen = QPen(Qt.black)
-        blackPen.setWidth(2)
-
+        
+        # Définition des pinceaux
         redPen = QPen(Qt.red)
         redPen.setWidth(1)
-
-        #def create_resistance(self, px, py, name):
-        self.rect = scene.addRect(0, -100, 1,1, blackPen)
-        #self.rect.setFlag(QGraphicsItem.ItemIsMovable)
 
         max_size_x = 2560/2                #FHD = 1920 ; QHD = 2560
         max_size_y = 1440/2               #FHD = 1080 ; QHD = 1440
@@ -66,9 +61,7 @@ class InterfaceGraphique(FrameWithBorder):
         min_y = -(max_size_y)/2
         max_y = (max_size_y)/2
 
-
         # axes
-
         axe_x = scene.addLine(min_x, 0, max_x, 0, redPen)          #axe abscisses
         axe_y = scene.addLine(0, min_y, 0, max_y, redPen)          #axe ordonnées
 
@@ -93,7 +86,30 @@ class InterfaceGraphique(FrameWithBorder):
         text_y1 = scene.addText("+y", QFont("Sanserif", 15))
         text_y1.setPos(QPointF(0, y))
 
-        
+        self.view = QGraphicsView(scene, self)
+        self.view.setGeometry(0, 0, max_size_x, max_size_y)
+
+    def create_ui(self):
+
+        scene = QGraphicsScene(self)
+ 
+        # Définition des pinceaux 
+        blackPen = QPen(Qt.black)
+        blackPen.setWidth(2)
+
+        #def create_resistance(self, px, py, name):
+        self.rect = scene.addRect(0, -100, 1,1, blackPen)
+        #self.rect.setFlag(QGraphicsItem.ItemIsMovable)
+
+        max_size_x = 2560/2                #FHD = 1920 ; QHD = 2560
+        max_size_y = 1440/2               #FHD = 1080 ; QHD = 1440
+
+        min_x = -(max_size_x)/2
+        max_x = (max_size_x)/2
+
+        min_y = -(max_size_y)/2
+        max_y = (max_size_y)/2
+
         #test circuit test
 
         #noeuds #TODO : remplacer par classes et methodes
