@@ -1,6 +1,5 @@
 #from email.policy import default
 import sys
-from xmlrpc.client import Boolean
 from noeud import Noeud
 from composant import Composant
 from fil import Fil
@@ -87,7 +86,7 @@ class Circuit():
 
     # Retourne vrai si un noeud est contenu dans le circuit, faux sinon
     # Soit le nom est déjà pris, soit les coordonnées sont déjà prises
-    def contien_noeud(self, noeud : Noeud) -> bool:
+    def _contien_noeud(self, noeud : Noeud) -> bool:
         for elmt in self.noeuds :
             if elmt.nom == noeud.nom : return True
             if elmt.nx == noeud.nx and elmt.ny == noeud.ny : return True
@@ -95,32 +94,32 @@ class Circuit():
 
 #TODO Retourne vrai si un composant est contenu dans le circuit, faux sinon
     # les coordonnées sont déjà prises ?
-    def contien_composant(self, composant : Composant) -> bool:
+    def _contien_composant(self, composant : Composant) -> bool:
         for elmt in self.composants :
             if elmt.noeud_depart == composant.noeud_depart and elmt.noeud_arrivee == composant.noeud_arrivee : return True
         return False
 
     # Ajoute un nœud au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
     def add_noeud(self, noeud : Noeud) -> None:
-        if self.contien_noeud(noeud) :
+        if self._contien_noeud(noeud) :
             raise Exception("le noeud est déjà dans le circuit")
         else : self.noeuds.append(noeud)
 
     # Ajoute un composant au circuit. Si le nœud appartient déjà au circuit : ▪ raise Exception("le noeud est déjà dans le circuit")
     def add_composant(self, composant : Composant) -> None:
-        if self.contien_composant(composant) :
+        if self._contien_composant(composant) :
             raise Exception("le composant est déjà dans le circuit")
         else : self.composants.append(composant)
 
     # Retire un nœud du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
     def remove_noeud(self, noeud : Noeud) -> None:
-        if not self.contien_noeud(noeud) :
+        if not self._contien_noeud(noeud) :
             raise Exception("le noeud n’est pas dans le circuit")
         else : self.noeuds.remove(noeud)
         
     # Retire un composant du circuit. Si le nœud n’appartient pas au circuit : ▪ raise Exception("le noeud n’est pas dans le circuit")
     def remove_composant(self, composant : Composant) -> None:
-        if not self.contien_composant(composant) :
+        if not self._contien_composant(composant) :
             raise Exception("le composant n’est pas dans le circuit")
         else : self.composants.remove(composant)
 
@@ -184,7 +183,7 @@ class Circuit():
         return circuit
 
     # Permet la gestion du circuit par menu textuel 
-    def menu_circuit(self) -> Boolean:
+    def menu_circuit(self) -> bool:
 
         print("1 : afficher le circuit")
         print("2 : ajouter un noeud")

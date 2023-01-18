@@ -50,7 +50,7 @@ class MainWindow(QMainWindow):
         global circuit_courant
         circuit_courant = circuit
 
-    def get_circuit_courant(self):
+    def get_circuit_courant(self) -> Circuit:
         return circuit_courant    
 
     # Actions
