@@ -67,6 +67,8 @@ class InterfaceGraphique(FrameWithBorder):
         max_y = (max_size_y)/2
 
 
+        # axes
+
         axe_x = scene.addLine(min_x, 0, max_x, 0, redPen)          #axe abscisses
         axe_y = scene.addLine(0, min_y, 0, max_y, redPen)          #axe ordonnées
 
@@ -163,22 +165,54 @@ class InterfaceGraphique(FrameWithBorder):
 
         generateur_radius = 25
         generateur_diameter = generateur_radius*2
+
         generateur = scene.addEllipse(f1_2.milieu_x-generateur_radius, f1_2.milieu_y-generateur_radius, generateur_diameter, generateur_diameter, blackPen)
         generateur_text = scene.addText("G", QFont("Sanserif", 15))
         generateur_text.setPos(QPointF(f1_2.milieu_x+generateur_radius/2, f1_2.milieu_y+generateur_radius/2))
 
             #resistance 1
-        
-        resistance1_largeur = 20
-        resistance1_longueur = 40
-        resistance1 = scene.addRect(f2_3)
+
+        resistance_largeur = 20
+        resistance_longueur = 40
+
+
+        resistance1 = scene.addRect(f2_3.milieu_x-resistance_longueur/2, f2_3.milieu_y-resistance_largeur/2, resistance_longueur, resistance_largeur, blackPen)
+        resistance1.text = scene.addText("R1", QFont("Sanserif", 15))
+        resistance1.text.setPos(QPointF(f2_3.milieu_x-resistance_longueur/2, f2_3.milieu_y+resistance_largeur/2))
 
             #resistance 2
 
+        resistance2 = scene.addRect(f4_1.milieu_x-resistance_longueur/2, f4_1.milieu_y-resistance_largeur/2, resistance_longueur, resistance_largeur, blackPen)
+        resistance2.text = scene.addText("R2", QFont("Sanserif", 15))
+        resistance2.text.setPos(QPointF(f4_1.milieu_x-resistance_longueur/2, f4_1.milieu_y+resistance_largeur/2))
+
             #condensateur 1
 
-            #inductance 1
+        condensateur_longueur = 40
+        condensateur_espacement = 5
+
+        condensateur_l1_milieu_x = f1_3.milieu_x + condensateur_espacement
+        condensateur_l1_milieu_y = f1_3.milieu_y - condensateur_espacement
+        condensateur_l2_milieu_x = f1_3.milieu_x - condensateur_espacement
+        condensateur_l2_milieu_y = f1_3.milieu_y + condensateur_espacement
+
+        condensateur_l1=scene.addLine(condensateur_l1_milieu_x + condensateur_longueur/2 + condensateur_espacement, condensateur_l1_milieu_y,condensateur_l1_milieu_x - condensateur_longueur/2 - condensateur_espacement, condensateur_l1_milieu_y, blackPen)
+        condensateur_l1.setTransformOriginPoint(condensateur_l1_milieu_x, condensateur_l1_milieu_y)
+        condensateur_l1.setRotation(55)
+
+        condensateur_l2=scene.addLine(condensateur_l2_milieu_x + condensateur_longueur/2 + condensateur_espacement, condensateur_l2_milieu_y,condensateur_l2_milieu_x - condensateur_longueur/2 - condensateur_espacement, condensateur_l2_milieu_y, blackPen)
+        condensateur_l2.setTransformOriginPoint(condensateur_l2_milieu_x, condensateur_l2_milieu_y)
+        condensateur_l2.setRotation(55)
+
+            #inductance 1 #TODO faut faire quelques petits trucs là, notamment le soucis d'avoir 5 petits elements
         
+        inductance_diametre = 16
+        inductance_rayon = inductance_diametre/2
+        inductance_decalage = inductance_rayon * 1.5
+
+        inductance_1=scene.addEllipse(f3_4.milieu_x-inductance_rayon, f3_4.milieu_y-inductance_decalage, inductance_diametre, inductance_diametre, blackPen)
+        inductance_2=scene.addEllipse(f3_4.milieu_x-inductance_rayon, f3_4.milieu_y, inductance_diametre, inductance_diametre, blackPen)
+        inductance_3=scene.addEllipse(f3_4.milieu_x-inductance_rayon, f3_4.milieu_y+inductance_decalage, inductance_diametre, inductance_diametre, blackPen)
 
 
         def create_noeud(self, px, py, name):
