@@ -3,26 +3,9 @@ import sys
 from PySide6.QtCore import Qt, QPointF
 from PySide6.QtGui import QAction, QBrush, QPen, QFont, QColor
 from PySide6.QtWidgets import QWidget, QLabel, QApplication, QFrame, QGraphicsScene, QGraphicsView, QGraphicsItem
+         
 
-
-
-
-class FrameWithBorder(QFrame):
-    DEFAULT_BORDURE = True
-
-    def __init__(self):
-        super().__init__()
-
-    # DEFAULT_BORDURE peut être utilisé dans __init__
-    def __init__(self,bordure : bool = DEFAULT_BORDURE):
-        super().__init__()
-        if bordure :
-            self.setFrameStyle(QFrame.Panel | QFrame.Plain)
-            self.setLineWidth(0)
-
-            
-
-class InterfaceGraphique(FrameWithBorder):
+class InterfaceGraphique(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -48,7 +31,7 @@ class InterfaceGraphique(FrameWithBorder):
         
         scene = QGraphicsScene(self)
         
-        # Définition des pinceaux
+        # Définition des pinceaux - a remettre dans toutes les methodes
         redPen = QPen(Qt.red)
         redPen.setWidth(1)
 
@@ -60,6 +43,7 @@ class InterfaceGraphique(FrameWithBorder):
 
         min_y = -(max_size_y)/2
         max_y = (max_size_y)/2
+
 
         # axes
         axe_x = scene.addLine(min_x, 0, max_x, 0, redPen)          #axe abscisses
@@ -96,10 +80,6 @@ class InterfaceGraphique(FrameWithBorder):
         # Définition des pinceaux 
         blackPen = QPen(Qt.black)
         blackPen.setWidth(2)
-
-        #def create_resistance(self, px, py, name):
-        self.rect = scene.addRect(0, -100, 1,1, blackPen)
-        #self.rect.setFlag(QGraphicsItem.ItemIsMovable)
 
         max_size_x = 2560/2                #FHD = 1920 ; QHD = 2560
         max_size_y = 1440/2               #FHD = 1080 ; QHD = 1440
