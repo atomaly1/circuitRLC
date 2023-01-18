@@ -45,8 +45,6 @@ class MainWindow(QMainWindow):
         self.creer_barre_etat()
         self.creer_fenetres_detachables()
 
-    
-
     def set_circuit_courant(self, circuit : Circuit):
         global circuit_courant
         circuit_courant = circuit
@@ -277,9 +275,6 @@ class MainWindow(QMainWindow):
         self._te_resultats = QTextEdit()                                              # Widget d'affichage du texte
         self._te_resultats.setReadOnly(True)                                          # Lecture seule
         self._te_resultats.setLineWrapMode(QTextEdit.NoWrap)                          # Pas de retour à la ligne automatique
-
-#TODO supprimer le texte par défaut une fois que les résultats pourront être affichés
-      
         self._resultats.layout().addWidget(self._te_resultats)
 
     @Slot()
@@ -404,7 +399,7 @@ class MainWindow(QMainWindow):
 
         # Nom
         le_nom = QLineEdit("")
-        le_nom.setValidator(QRegularExpressionValidator("\\N{0,14}"))
+        le_nom.setValidator(QRegularExpressionValidator("[a-zA-Z0-9]\\N{0,14}"))
         le_nom.setPlaceholderText("R1")
         layout.addRow(QLabel("Nom : "), le_nom)
         # Valeur
@@ -484,7 +479,8 @@ class MainWindow(QMainWindow):
         layout = QFormLayout(self._popup_noeud)
 
         le1 = QLineEdit("")
-        le1.setValidator(QRegularExpressionValidator("\\N{0,14}")) # https://www.ics.com/blog/qt-support-input-masks-and-validators
+
+        le1.setValidator(QRegularExpressionValidator("[a-zA-Z0-9]\\N{0,14}")) # https://www.ics.com/blog/qt-support-input-masks-and-validators
         layout.addRow(QLabel("Nom : "), le1)
         le1.setPlaceholderText("n1")
 
