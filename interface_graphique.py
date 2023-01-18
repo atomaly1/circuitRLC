@@ -1,8 +1,8 @@
 import sys
 
 from PySide6.QtCore import Qt, QPointF
-from PySide6.QtGui import QAction, QBrush, QPen, QFont, QColor
-from PySide6.QtWidgets import QWidget, QLabel, QApplication, QFrame, QGraphicsScene, QGraphicsView, QGraphicsItem
+from PySide6.QtGui import QPen, QFont
+from PySide6.QtWidgets import QWidget, QGraphicsScene, QGraphicsView, QGraphicsItem
          
 
 class InterfaceGraphique(QWidget):
@@ -14,10 +14,10 @@ class InterfaceGraphique(QWidget):
         #self.create_ui()
         self.show()
 
-    def enterEvent(self, event):
+    def enterEvent(self):
         self.setCursor(Qt.CrossCursor)
     '''
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event):        #affiche les coordonnées de la souris dans la barre de statut
         self.update_points()
         self.points.append(event.pos())
         pos = event.pos()
@@ -31,12 +31,12 @@ class InterfaceGraphique(QWidget):
         
         scene = QGraphicsScene(self)
         
-        # Définition des pinceaux - a remettre dans toutes les methodes
+        # Définition du pinceau et de la fenêtre
         redPen = QPen(Qt.red)
         redPen.setWidth(1)
 
-        max_size_x = 2560/2                #FHD = 1920 ; QHD = 2560
-        max_size_y = 1440/2               #FHD = 1080 ; QHD = 1440
+        max_size_x = 1000/2                #FHD = 1920 ; QHD = 2560
+        max_size_y = 700/2               #FHD = 1080 ; QHD = 1440
 
         min_x = -(max_size_x)/2
         max_x = (max_size_x)/2
@@ -46,13 +46,13 @@ class InterfaceGraphique(QWidget):
 
 
         # axes
-        axe_x = scene.addLine(min_x, 0, max_x, 0, redPen)          #axe abscisses
-        axe_y = scene.addLine(0, min_y, 0, max_y, redPen)          #axe ordonnées
+        axe_x = scene.addLine(min_x, 0, max_x, 0, redPen)           #axe abscisses - on instancie la variable pour pouvoir utiliser des transformations après si besoin (supprimer, par exemple)
+        axe_y = scene.addLine(0, min_y, 0, max_y, redPen)           #axe ordonnées
 
-        taille_indentation = 10
+        taille_indentation = 10                                     #distance entre 2 indentations
 
-        x = min_x
-        text_x0 = scene.addText("-x", QFont("Sanserif", 15))
+        x = min_x                                                   #ajoute des indentations et les noms sur l'axe x                         
+        text_x0 = scene.addText("-x", QFont("Sanserif", 15))        
         text_x0.setPos(QPointF(x, 0))
         while x <= max_x:
             scene.addLine(x, -(taille_indentation/2), x, (taille_indentation/2), redPen)
@@ -60,29 +60,28 @@ class InterfaceGraphique(QWidget):
         text_x1 = scene.addText("x", QFont("Sanserif", 15))
         text_x1.setPos(QPointF(x, 0))
 
-        y = min_y
+        y = min_y                                                   #ajoute des indentation et les noms  sur l'axe y
         text_y0 = scene.addText("-y", QFont("Sanserif", 15))
         text_y0.setPos(QPointF(0, y))
         while y <= max_y:
             scene.addLine(-(taille_indentation/2), y, (taille_indentation/2), y, redPen)
             y = y + 10
-        
-        text_y1 = scene.addText("+y", QFont("Sanserif", 15))
+        text_y1 = scene.addText("+y", QFont("Sanserif", 15))        
         text_y1.setPos(QPointF(0, y))
 
         self.view = QGraphicsView(scene, self)
-        self.view.setGeometry(0, 0, max_size_x, max_size_y)
+        self.view.setGeometry(0, 0, max_size_x, max_size_y)         #fixe la géométrie de la vue - trouver comment le rendre dynamique en remplaçant par une fonction fitInView(scene.sceneRect(), Qt.KeepAspectRatio)
 
     def create_ui(self):
 
         scene = QGraphicsScene(self)
  
-        # Définition des pinceaux 
+        # Définition du stylo et de la fenêtre
         blackPen = QPen(Qt.black)
         blackPen.setWidth(2)
 
-        max_size_x = 2560/2                #FHD = 1920 ; QHD = 2560
-        max_size_y = 1440/2               #FHD = 1080 ; QHD = 1440
+        max_size_x = 1000/2                #FHD = 1920 ; QHD = 2560
+        max_size_y = 700/2                #FHD = 1080 ; QHD = 1440
 
         min_x = -(max_size_x)/2
         max_x = (max_size_x)/2
@@ -92,7 +91,7 @@ class InterfaceGraphique(QWidget):
 
         #test circuit test
 
-        #noeuds #TODO : remplacer par classes et methodes
+        #noeuds #TODO : remplacer par classes et methodes qu'on peut appeler
 
         n_diameter = 20
         n_radius = n_diameter/2
@@ -127,7 +126,7 @@ class InterfaceGraphique(QWidget):
         n1_text.setPos(QPointF(n4_x, n4_y))
 
 
-        #fils  #TODO : remplacer par classes et methodes
+        #fils  #TODO : remplacer par classes et methodes qu'on peut appeler
 
             #n1-n2
         f1_2 = scene.addLine(n1_x, n1_y, n2_x, n2_y, blackPen)
@@ -155,7 +154,7 @@ class InterfaceGraphique(QWidget):
         f1_3.milieu_y = (n1_y+n3_y)/2
 
 
-        #composants #TODO : remplacer par classes et methodes
+        #composants #TODO : remplacer par classes et methodes qu'on peut appeler
             
             #générateur
 
@@ -200,7 +199,10 @@ class InterfaceGraphique(QWidget):
         condensateur_l2.setTransformOriginPoint(condensateur_l2_milieu_x, condensateur_l2_milieu_y)
         condensateur_l2.setRotation(55)
 
-            #inductance 1 #TODO faut faire quelques petits trucs là, notamment le soucis d'avoir 5 petits elements
+        condensateur_l1.text = scene.addText("C1", QFont("Sanserif", 15))
+        condensateur_l1.text.setPos(QPointF(condensateur_l1_milieu_x, condensateur_l1_milieu_y))
+
+            #inductance 1
         
         inductance_diametre = 16
         inductance_rayon = inductance_diametre/2
@@ -209,14 +211,6 @@ class InterfaceGraphique(QWidget):
         inductance_1=scene.addEllipse(f3_4.milieu_x-inductance_rayon, f3_4.milieu_y-inductance_decalage, inductance_diametre, inductance_diametre, blackPen)
         inductance_2=scene.addEllipse(f3_4.milieu_x-inductance_rayon, f3_4.milieu_y, inductance_diametre, inductance_diametre, blackPen)
         inductance_3=scene.addEllipse(f3_4.milieu_x-inductance_rayon, f3_4.milieu_y+inductance_decalage, inductance_diametre, inductance_diametre, blackPen)
-
-
-        def create_noeud(self, px, py, name):
-            self.ellipse = scene.addEllipse(px, py, 5, 5, blackPen)
-            self.ellipse.setFlag(QGraphicsItem.ItemIsMovable)
-
-        def create_text():
-            scene.addText("This is the greatest text, ever - Donald J. Trump", QFont("Sanserif", 15))
         
 
         self.view = QGraphicsView(scene, self)
