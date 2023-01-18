@@ -171,7 +171,7 @@ class InterfaceGraphique(FrameWithBorder):
         
         resistance1_largeur = 20
         resistance1_longueur = 40
-        resistance1 = scene.addRect(f2_3)
+        #resistance1 = scene.addRect(f2_3)
 
             #resistance 2
 

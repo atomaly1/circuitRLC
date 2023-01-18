@@ -6,17 +6,17 @@ Created on 25 juin 2022
 
 import sys, webbrowser
 
-# from screeninfo import get_monitors               # Used for window size extraction. https://stackoverflow.com/questions/3129322/how-do-i-get-monitor-resolution-in-python
 from PySide6.QtCore import QSize, Qt, Slot, QTextStream, QFile 
 from PySide6.QtGui import QIcon, QAction, QKeySequence, QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QToolBar, QDockWidget, QFileDialog, QDialog, QDialogButtonBox, QMessageBox, QTextEdit, QFormLayout, QLabel, QLineEdit, QVBoxLayout, QComboBox
 
 from noeud import Noeud
-from composant import Composant
 from circuit import Circuit
-from interface_graphique import InterfaceGraphique
+from sys_lineaire import SysLineaire
+from interface_graphique import *
+from math import pi
 
-#from interface_graphique import InterfaceGraphique
+circuit_courant = Circuit([],[])
 
 #TODO Ajouter au GSheet
 # Fenêtre principale (selon le "Dock Widget Example" : https://doc.qt.io/qtforpython/examples/example_widgets_mainwindows_dockwidgets.html?highlight=dock%20widget#dock-widget-example)
@@ -29,21 +29,12 @@ class MainWindow(QMainWindow):
         interface_graphique = InterfaceGraphique()
         self.setCentralWidget(interface_graphique)
 
-        #interface_graphique().create_ui().create_noeud(100, 100, "R1")
-
         # Design
-        #for m in get_monitors():
-        #    print(str(m))                      # returns info on screen resolution, to be used to define window size. see libraries  import lines
-                                                # use regex
-
-        self.max_size_x = 1627
-        self.max_size_y = 1145
-
         self.setWindowTitle('CircuitRLC')                       # Titre
         self.setWindowIcon(QIcon('icons/rlc_project_v2.ico'))   # Icône
-        self.resize(self.max_size_x, self.max_size_y)                                   # Taille de la fenêtre
+        self.resize(1000, 700)                                   # Taille de la fenêtre
         self.setMinimumSize(400, 300)                           # Taille min
-        #self.setMaximumSize(1920, 1080)                           # Taille MAX
+        #self.setMaximumSize(800, 600)                           # Taille MAX
         #self.setStyleSheet('background:rgba(255,255,255,127)')  # Couleur du fond (white, black, cyan, red, magenta, green, yellow, blue, gray, lightGray, darkGray... OU Color Picker Online OU rgba(63,195,255,127))
         
         # Initialisation des éléments de la fenêtre principale
@@ -53,6 +44,15 @@ class MainWindow(QMainWindow):
         self.creer_barre_outils()
         self.creer_barre_etat()
         self.creer_fenetres_detachables()
+
+    
+
+    def set_circuit_courant(self, circuit : Circuit):
+        global circuit_courant
+        circuit_courant = circuit
+
+    def get_circuit_courant(self):
+        return circuit_courant    
 
     # Actions
     def creer_actions(self):    
@@ -279,8 +279,7 @@ class MainWindow(QMainWindow):
         self._te_resultats.setLineWrapMode(QTextEdit.NoWrap)                          # Pas de retour à la ligne automatique
 
 #TODO supprimer le texte par défaut une fois que les résultats pourront être affichés
-        self._te_resultats.setPlainText("WIP \n\nIci apparaîtront les résultats.")    # Texte par défaut : à remplacer par setPlainText("<resultats>") 
-        
+      
         self._resultats.layout().addWidget(self._te_resultats)
 
     @Slot()
@@ -291,8 +290,10 @@ class MainWindow(QMainWindow):
 #TODO Ouvrir circuit de test
     @Slot()
     def ouvrir(self):
-        #circuit.demo()
-        self.statusBar().showMessage("Circuit ouvert", 2000)
+        
+        self.set_circuit_courant(Circuit.create_circuit_test())
+        self._te_resultats.setText(f'{self.get_circuit_courant()}')
+        self.statusBar().showMessage("Circuit de test ouvert", 2000) #"Circuit ouvert"
 
     # Test sauvegarde
     @Slot()
@@ -359,12 +360,17 @@ class MainWindow(QMainWindow):
         le.textChanged.connect(lambda: self._boutons_popup_resoudre.button(QDialogButtonBox.Ok).setEnabled(le.hasAcceptableInput())) #https://doc.qt.io/qtforpython/PySide6/QtWidgets/QLineEdit.html#PySide6.QtWidgets.PySide6.QtWidgets.QLineEdit.textChanged
  
         # Connecte les boutons OK et Annuler à la fonction accept_noeud et reject respectivement
-        self._boutons_popup_resoudre.accepted.connect(lambda: self.accept_resoudre(le.text()))
+        self._boutons_popup_resoudre.accepted.connect(lambda: self.accept_resoudre(float(le.text())))
         self._boutons_popup_resoudre.rejected.connect(self._popup_resoudre.reject)
 
 #TODO circuit.resoudre(f)
     @Slot(float)
-    def accept_resoudre(self, f):
+    def accept_resoudre(self, f : float):
+        omega = 2*pi*f
+        self._te_resultats.setText(f'{circuit_courant}')
+        lin_sys = SysLineaire.create_sys_lin(circuit_courant, omega)
+        sol = lin_sys.solve()
+        self._te_resultats.setText(f'{lin_sys}\n{lin_sys.solve_str(sol)}')
         self._popup_resoudre.accept()
         self.statusBar().showMessage(f"Circuit résolu pour une fréquence f = {f} Hz", 4000)
 
@@ -491,7 +497,7 @@ class MainWindow(QMainWindow):
         le3.setValidator(QRegularExpressionValidator("[0-9]\\d{0,2}"))
         layout.addRow(QLabel("Coordonnée Y : "), le3)
         le3.setPlaceholderText("712")
-
+        
         self._boutons_popup_noeud = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         layout.addRow(self._boutons_popup_noeud) # https://stackoverflow.com/questions/3016974/how-to-get-text-in-qlineedit-when-qpushbutton-is-pressed-in-a-string
         
@@ -515,10 +521,4 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f"Noeud '{nom}' ajouté en ({nx} ; {ny})", 4000)
 
 if __name__ == '__main__':
-    
-    app = QApplication(sys.argv)    # Création de l'instance d'application en lui passant le tableau des arguments
-
-    main_window = MainWindow()      # Instanciation de la fenêtre principale
-    main_window.show()              # Afficher la fenêtre principale
-
-    sys.exit(app.exec())            # Démarrage de la boucle de gestion des événements
+    pass
