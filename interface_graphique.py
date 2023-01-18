@@ -14,9 +14,10 @@ class InterfaceGraphique(QWidget):
         #self.create_ui()
         self.show()
 
+    '''
     def enterEvent(self):
         self.setCursor(Qt.CrossCursor)
-    '''
+    
     def mouseMoveEvent(self, event):        #affiche les coordonnées de la souris dans la barre de statut
         self.update_points()
         self.points.append(event.pos())
