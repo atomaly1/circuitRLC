@@ -4,7 +4,7 @@ from noeud import Noeud
 class Condensateur(Composant):
     
     def __init__(self, noeud_depart: Noeud, noeud_arrivee: Noeud, nom: str, c: float) -> None:
-        super().__init__(noeud_depart, noeud_arrivee)
+        super().__init__(noeud_depart, noeud_arrivee, w = 100.0)
         self._nom = nom
         self._c = c
 
@@ -31,7 +31,7 @@ class Condensateur(Composant):
         return 1
 
     def coeff_i(self) -> complex:
-        return -1/(1j*self.c*Composant.w)
+        return -1/(1j*self.c*self.w)
 
     def coeff_c(self) -> complex:
         return 0

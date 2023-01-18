@@ -95,6 +95,9 @@ class SysLineaire() : # systeme lineaire de la forme ax = b
         # Troubleshooting
         # TODO : vérifier que le circuit sois fermé
 
+        for composant in circuit.composants :
+            composant.w = omega
+
         nb_composants = len(circuit.composants)
         nb_inconnus = nb_composants * 2
         index_ligne = 0

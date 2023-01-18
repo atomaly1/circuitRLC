@@ -366,7 +366,7 @@ class MainWindow(QMainWindow):
 #TODO circuit.resoudre(f)
     @Slot(float)
     def accept_resoudre(self, f : float):
-        omega = 2*pi*f
+        omega = f #TODO * 2 * pi
         self._te_resultats.setText(f'{circuit_courant}')
         lin_sys = SysLineaire.create_sys_lin(circuit_courant, omega)
         sol = lin_sys.solve()

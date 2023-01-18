@@ -4,7 +4,7 @@ from noeud import Noeud
 class Inductance(Composant):
     
     def __init__(self, noeud_depart: Noeud, noeud_arrivee: Noeud, nom: str, l: float) -> None:
-        super().__init__(noeud_depart, noeud_arrivee)
+        super().__init__(noeud_depart, noeud_arrivee, w = 100.0)
         self._nom = nom
         self._l = l
 
@@ -31,7 +31,7 @@ class Inductance(Composant):
         return 1
 
     def coeff_i(self) -> complex:
-        return -1j*self.l*Composant.w
+        return -1j*self.l*self.w
 
     def coeff_c(self) -> complex:
         return 0
